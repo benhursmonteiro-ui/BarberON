@@ -1,0 +1,844 @@
+{
+  "services": [
+    {
+      "id": "srv-1",
+      "name": "Corte Degradê & Social",
+      "description": "Corte personalizado moderno ou tradicional com acabamento navalhado e lavagem.",
+      "durationMinutes": 30,
+      "price": 45,
+      "category": "cabelo",
+      "popular": true,
+      "barbershopId": "shop-imperial"
+    },
+    {
+      "id": "srv-2",
+      "name": "Barboterapia Tradicional",
+      "description": "Modelagem de barba com toalha quente, óleos essenciais, massagem facial e navalha afiada.",
+      "durationMinutes": 30,
+      "price": 35,
+      "category": "barba",
+      "popular": true,
+      "barbershopId": "shop-imperial"
+    },
+    {
+      "id": "srv-3",
+      "name": "Combo Master: Cabelo + Barba",
+      "description": "Experiência completa com corte degradê, barba terapia com toalha quente e finalização com pomada.",
+      "durationMinutes": 50,
+      "price": 70,
+      "category": "combo",
+      "popular": true,
+      "barbershopId": "shop-imperial"
+    },
+    {
+      "id": "srv-4",
+      "name": "Acabamento & Pezinho",
+      "description": "Alinhamento do contorno do cabelo e costeletas com navalhete e pós-barba.",
+      "durationMinutes": 15,
+      "price": 20,
+      "category": "cabelo",
+      "barbershopId": "shop-imperial"
+    },
+    {
+      "id": "srv-5",
+      "name": "Pigmentação de Barba ou Cabelo",
+      "description": "Camuflagem de falhas e fios brancos com efeito natural e duradouro.",
+      "durationMinutes": 25,
+      "price": 35,
+      "category": "tratamento",
+      "barbershopId": "shop-imperial"
+    },
+    {
+      "id": "srv-6",
+      "name": "Hidratação & Selagem Capilar",
+      "description": "Tratamento nutritivo profundo para restaurar o brilho e a força dos fios.",
+      "durationMinutes": 25,
+      "price": 40,
+      "category": "tratamento",
+      "barbershopId": "shop-imperial"
+    },
+    {
+      "barbershopId": "shop-1791338136759",
+      "name": "Corte Degradê & Social",
+      "description": "Corte personalizado moderno ou tradicional com acabamento navalhado e lavagem.",
+      "durationMinutes": 30,
+      "price": 45,
+      "category": "cabelo",
+      "popular": true,
+      "id": "srv-1791338136760-0"
+    },
+    {
+      "barbershopId": "shop-1791338136759",
+      "name": "Barboterapia & Toalha Quente",
+      "description": "Modelagem de barba com toalha quente e óleos essenciais.",
+      "durationMinutes": 30,
+      "price": 35,
+      "category": "barba",
+      "popular": true,
+      "id": "srv-1791338136760-1"
+    },
+    {
+      "barbershopId": "shop-1791338136759",
+      "name": "Combo Cabelo + Barba Completo",
+      "description": "Experiência completa de corte e barba com finalização.",
+      "durationMinutes": 50,
+      "price": 70,
+      "category": "combo",
+      "popular": true,
+      "id": "srv-1791338136760-2"
+    },
+    {
+      "id": "srv-1792028283970-1",
+      "barbershopId": "shop-1792028283969",
+      "name": "Corte Degradê & Social",
+      "description": "Corte moderno ou tradicional com acabamento e lavagem.",
+      "price": 45,
+      "duration": 30,
+      "durationMinutes": 30,
+      "popular": true,
+      "active": true,
+      "category": "cabelo"
+    },
+    {
+      "id": "srv-1792028283970-2",
+      "barbershopId": "shop-1792028283969",
+      "name": "Barboterapia Completa",
+      "description": "Alinhamento com toalha quente, óleos e navalha.",
+      "price": 35,
+      "duration": 30,
+      "durationMinutes": 30,
+      "popular": true,
+      "active": true,
+      "category": "barba"
+    },
+    {
+      "id": "srv-1792028283970-3",
+      "barbershopId": "shop-1792028283969",
+      "name": "Combo Cabelo + Barba",
+      "description": "Experiência completa de corte e barba com toalha quente.",
+      "price": 70,
+      "duration": 50,
+      "durationMinutes": 50,
+      "popular": true,
+      "active": true,
+      "category": "combo"
+    }
+  ],
+  "barbers": [
+    {
+      "id": "barber-1",
+      "name": "Marcos Silva",
+      "specialty": "Mestre da Navalha, Fade & Barboterapia",
+      "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80",
+      "phone": "11988881111",
+      "email": "marcos@barberon.com",
+      "commissionRate": 50,
+      "workingHours": {
+        "start": "09:00",
+        "end": "19:00",
+        "lunchStart": "12:00",
+        "lunchEnd": "13:00"
+      },
+      "daysOfWeek": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "isActive": true,
+      "barbershopId": "shop-imperial",
+      "active": true
+    },
+    {
+      "id": "barber-2",
+      "name": "Lucas Andrade",
+      "specialty": "Visagismo Masculino, Barbas Esculpidas & Freestyle",
+      "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80",
+      "phone": "11988882222",
+      "email": "lucas@barberon.com",
+      "commissionRate": 50,
+      "workingHours": {
+        "start": "09:30",
+        "end": "19:30",
+        "lunchStart": "13:00",
+        "lunchEnd": "14:00"
+      },
+      "daysOfWeek": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "isActive": true,
+      "barbershopId": "shop-imperial"
+    },
+    {
+      "id": "barber-3",
+      "name": "Carlos Mendes",
+      "specialty": "Cortes Clássicos, Tesoura & Tratamentos Capilares",
+      "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
+      "phone": "11988883333",
+      "email": "carlos@barberon.com",
+      "commissionRate": 55,
+      "workingHours": {
+        "start": "10:00",
+        "end": "20:00",
+        "lunchStart": "14:00",
+        "lunchEnd": "15:00"
+      },
+      "daysOfWeek": [
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "isActive": true,
+      "barbershopId": "shop-imperial"
+    },
+    {
+      "id": "barber-1791338136760",
+      "barbershopId": "shop-1791338136759",
+      "name": "Thiago Lima",
+      "specialty": "Mestre da Navalha & Cortes Modernos",
+      "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80",
+      "phone": "11977770000",
+      "email": "thiagolima@barberon.com",
+      "commissionRate": 50,
+      "workingHours": {
+        "start": "09:00",
+        "end": "19:00",
+        "lunchStart": "12:00",
+        "lunchEnd": "13:00"
+      },
+      "daysOfWeek": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "isActive": true
+    },
+    {
+      "id": "barber-1792028283970",
+      "userId": "usr-admin-1792028283969",
+      "barbershopId": "shop-1792028283969",
+      "name": "Ben",
+      "specialty": "Mestre da Navalha & Cortes Modernos",
+      "commission": 50,
+      "commissionRate": 50,
+      "rating": 5,
+      "reviews": 0,
+      "active": true,
+      "phone": "89994472931",
+      "email": "teste@gmail.com",
+      "blockedSlots": [],
+      "holidays": [],
+      "workingHours": {
+        "start": "08:00",
+        "end": "20:00"
+      },
+      "daysOfWeek": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
+    }
+  ],
+  "appointments": [
+    {
+      "id": "apt-1",
+      "customerName": "Rodrigo Santoro",
+      "customerPhone": "11988887777",
+      "customerEmail": "rodrigo@email.com",
+      "serviceId": "srv-1",
+      "barberId": "barber-1",
+      "date": "2026-10-05",
+      "time": "10:00",
+      "notes": "Degradê na zero baixa",
+      "status": "concluido",
+      "totalAmount": 45,
+      "createdAt": "2026-10-05T18:33:50.646Z",
+      "serviceName": "Corte Degradê & Social",
+      "barberName": "Marcos Silva",
+      "barbershopId": "shop-imperial",
+      "commission": null,
+      "paymentStatus": "pago"
+    },
+    {
+      "id": "apt-2",
+      "customerName": "Gabriel Medina",
+      "customerPhone": "11977776666",
+      "customerEmail": "gabriel@email.com",
+      "serviceId": "srv-3",
+      "barberId": "barber-2",
+      "date": "2026-10-05",
+      "time": "11:00",
+      "notes": "Toalha quente bem quente por favor",
+      "status": "concluido",
+      "totalAmount": 70,
+      "createdAt": "2026-10-05T18:33:50.646Z",
+      "serviceName": "Combo Master: Cabelo + Barba",
+      "barberName": "Lucas Andrade",
+      "barbershopId": "shop-imperial",
+      "paymentMethod": "dinheiro",
+      "isFiado": false,
+      "paymentStatus": "pago",
+      "commission": null
+    },
+    {
+      "id": "apt-3",
+      "customerName": "Felipe Massa",
+      "customerPhone": "11966665555",
+      "customerEmail": "felipe@email.com",
+      "serviceId": "srv-2",
+      "barberId": "barber-1",
+      "date": "2026-10-05",
+      "time": "09:00",
+      "notes": "Apenas alinhar o desenho",
+      "status": "concluido",
+      "totalAmount": 35,
+      "createdAt": "2026-10-05T18:33:50.646Z",
+      "serviceName": "Barboterapia Tradicional",
+      "barberName": "Marcos Silva",
+      "barbershopId": "shop-imperial"
+    },
+    {
+      "id": "apt-1792028954835",
+      "barbershopId": "shop-1792028283969",
+      "clientId": "client-1792028954802",
+      "clientName": "Ben Hur Sousa Monteiro",
+      "clientPhone": "12354130516513",
+      "clientEmail": "benhur.s.monteiro@gmail.com",
+      "barberId": "barber-1792028283970",
+      "barberName": "Ben",
+      "serviceId": "srv-1",
+      "serviceName": "Corte Degradê & Social",
+      "price": 45,
+      "commission": 22.5,
+      "date": "2026-10-15",
+      "time": "09:00",
+      "durationMinutes": 30,
+      "notes": "",
+      "status": "agendado",
+      "paymentStatus": "pendente",
+      "paymentMethod": "pix",
+      "isFiado": false,
+      "fiadoPaid": false,
+      "createdAt": "2026-10-15T01:49:14.835Z"
+    }
+  ],
+  "settings": {
+    "name": "Barbearia Imperial PRO",
+    "address": "Rua das Palmeiras, 450 - Jardins",
+    "phone": "11988887777",
+    "openHours": "Segunda a Sábado, das 09:00 às 20:00",
+    "plan": "PRO",
+    "maxBarbers": 99,
+    "monthlyAppointmentLimit": 999999
+  },
+  "customers": [
+    {
+      "id": "cust-1",
+      "name": "Rodrigo Santoro",
+      "phone": "11988887777",
+      "email": "rodrigo@email.com",
+      "notes": "Prefere degradê na zero baixa",
+      "totalVisits": 3,
+      "lastVisit": "2026-10-05",
+      "createdAt": "2026-10-05T18:41:06.415Z",
+      "barbershopId": "shop-imperial",
+      "totalSpent": null
+    },
+    {
+      "id": "cust-2",
+      "name": "Gabriel Medina",
+      "phone": "11977776666",
+      "email": "gabriel@email.com",
+      "notes": "Gosta de toalha quente bem quente",
+      "totalVisits": 1,
+      "lastVisit": "2026-10-05",
+      "createdAt": "2026-10-05T18:41:06.415Z",
+      "barbershopId": "shop-imperial"
+    },
+    {
+      "id": "cust-1791403428538",
+      "barbershopId": "shop-navalha",
+      "userId": "usr-1791403428536",
+      "name": "Cliente Teste",
+      "phone": "11999998888",
+      "email": "cliente.novo@exemplo.com",
+      "totalVisits": 0,
+      "totalSpent": 0,
+      "blocked": false,
+      "createdAt": "2026-10-07T20:03:48.538Z"
+    },
+    {
+      "id": "cust-1792028954838",
+      "barbershopId": "shop-1792028283969",
+      "userId": "client-1792028954802",
+      "name": "Ben Hur Sousa Monteiro",
+      "phone": "12354130516513",
+      "email": "benhur.s.monteiro@gmail.com",
+      "blocked": false,
+      "totalVisits": 1,
+      "totalSpent": 0,
+      "lastVisit": "2026-10-15",
+      "createdAt": "2026-10-15T01:49:14.838Z"
+    },
+    {
+      "id": "cust-1792096124182",
+      "barbershopId": "shop-1792028283969",
+      "userId": "usr-1792096124176",
+      "name": "clienteteste",
+      "phone": "121234567899",
+      "email": "clienteteste@gmail.com",
+      "totalVisits": 0,
+      "totalSpent": 0,
+      "blocked": false,
+      "createdAt": "2026-10-15T20:28:44.182Z"
+    }
+  ],
+  "transactions": [
+    {
+      "id": "tx-1",
+      "type": "despesa",
+      "category": "produtos",
+      "amount": 120,
+      "description": "Lâminas descartáveis e pomadas modeladoras",
+      "paymentMethod": "pix",
+      "date": "2026-10-05",
+      "createdAt": "2026-10-05T18:54:06.595Z",
+      "barbershopId": "shop-imperial"
+    },
+    {
+      "id": "tx-2",
+      "type": "despesa",
+      "category": "energia",
+      "amount": 250,
+      "description": "Conta de energia do mês",
+      "paymentMethod": "boleto",
+      "date": "2026-10-05",
+      "createdAt": "2026-10-05T18:54:06.595Z",
+      "barbershopId": "shop-imperial"
+    }
+  ],
+  "barbershops": [
+    {
+      "id": "shop-imperial",
+      "slug": "imperial",
+      "name": "Barbearia Imperial",
+      "ownerName": "Marcos Silva",
+      "ownerEmail": "marcos@barbeariaimperial.com",
+      "ownerPhone": "11988887777",
+      "address": "Rua das Palmeiras, 450 - Jardins, São Paulo",
+      "openHours": "Segunda a Sábado, das 09:00 às 20:00",
+      "plan": "PRO",
+      "maxBarbers": 99,
+      "monthlyAppointmentLimit": 999999,
+      "instagram": "https://instagram.com/barbeariaimperial",
+      "createdAt": "2026-10-07T01:48:17.991Z"
+    },
+    {
+      "id": "shop-navalha",
+      "slug": "navalha-de-ouro",
+      "name": "Navalha de Ouro",
+      "ownerName": "Ricardo Bastos",
+      "ownerEmail": "ricardo@navalhaouro.com",
+      "ownerPhone": "11977778888",
+      "address": "Av. Paulista, 1200 - Bela Vista, São Paulo",
+      "openHours": "Segunda a Sábado, das 09:00 às 19:00",
+      "plan": "FREE",
+      "maxBarbers": 1,
+      "monthlyAppointmentLimit": 30,
+      "instagram": "https://instagram.com/navalhadouro",
+      "createdAt": "2026-10-07T01:48:17.991Z"
+    },
+    {
+      "id": "shop-1791338136759",
+      "slug": "barbearia-vip",
+      "name": "Barbearia VIP",
+      "ownerName": "Thiago Lima",
+      "ownerEmail": "thiagolima@barberon.com",
+      "ownerPhone": "11977770000",
+      "address": "Endereço a definir",
+      "openHours": "Segunda a Sábado, das 09:00 às 20:00",
+      "plan": "PRO",
+      "maxBarbers": 99,
+      "monthlyAppointmentLimit": 999999,
+      "instagram": "https://instagram.com/barbeariavip",
+      "createdAt": "2026-10-07T01:55:36.759Z"
+    },
+    {
+      "id": "shop-1792028283969",
+      "slug": "monteiro",
+      "name": "Monteiro",
+      "ownerName": "Ben",
+      "ownerEmail": "teste@gmail.com",
+      "ownerPhone": "89994472931",
+      "address": "rua, avenida, casa",
+      "openHours": "08:00 às 20:00",
+      "plan": "FREE",
+      "maxBarbers": 1,
+      "monthlyAppointmentLimit": 30,
+      "instagram": "",
+      "createdAt": "2026-10-15T01:38:03.969Z"
+    }
+  ],
+  "users": [
+    {
+      "id": "usr-admin-1",
+      "name": "Marcos Silva (Dono & Barbeiro)",
+      "email": "admin@barbearia.com",
+      "password_hash": "admin123",
+      "role": "admin",
+      "phone": "11988887777",
+      "photo": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80",
+      "blocked": false,
+      "createdAt": "2026-10-07T02:18:15.596Z"
+    },
+    {
+      "id": "usr-barber-1",
+      "name": "Lucas Andrade",
+      "email": "lucas@barbearia.com",
+      "password_hash": "barber123",
+      "role": "barber",
+      "phone": "11988882222",
+      "photo": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80",
+      "blocked": false,
+      "createdAt": "2026-10-07T02:18:15.596Z"
+    },
+    {
+      "id": "usr-barber-2",
+      "name": "Mateus Costa",
+      "email": "mateus@barbearia.com",
+      "password_hash": "barber123",
+      "role": "barber",
+      "phone": "11988883333",
+      "photo": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=200&q=80",
+      "blocked": false,
+      "createdAt": "2026-10-07T02:18:15.596Z"
+    },
+    {
+      "id": "usr-client-1",
+      "name": "Rodrigo Santoro",
+      "email": "rodrigo@cliente.com",
+      "password_hash": "cliente123",
+      "role": "client",
+      "phone": "11999991111",
+      "photo": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80",
+      "blocked": false,
+      "createdAt": "2026-10-07T02:18:15.596Z"
+    },
+    {
+      "id": "usr-client-2",
+      "name": "Gabriel Medina",
+      "email": "gabriel@cliente.com",
+      "password_hash": "cliente123",
+      "role": "client",
+      "phone": "11999992222",
+      "photo": "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=200&q=80",
+      "blocked": false,
+      "createdAt": "2026-10-07T02:18:15.596Z"
+    },
+    {
+      "id": "usr-1791403428536",
+      "name": "Cliente Teste",
+      "email": "cliente.novo@exemplo.com",
+      "password_hash": "senha123456",
+      "role": "client",
+      "phone": "11999998888",
+      "barbershopId": "shop-navalha",
+      "blocked": false,
+      "createdAt": "2026-10-07T20:03:48.537Z"
+    },
+    {
+      "id": "usr-admin-1792028283969",
+      "name": "Ben (Dono)",
+      "email": "teste@gmail.com",
+      "password_hash": "teste123",
+      "role": "admin",
+      "phone": "89994472931",
+      "barbershopId": "shop-1792028283969",
+      "blocked": false,
+      "createdAt": "2026-10-15T01:38:03.969Z"
+    },
+    {
+      "id": "usr-1792096124176",
+      "name": "clienteteste",
+      "email": "clienteteste@gmail.com",
+      "password_hash": "Clienteteste123",
+      "role": "client",
+      "phone": "121234567899",
+      "barbershopId": "shop-1792028283969",
+      "blocked": false,
+      "createdAt": "2026-10-15T20:28:44.177Z"
+    }
+  ],
+  "shopConfig": {
+    "name": "Barbearia Imperial & Club",
+    "logo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=200&q=80",
+    "address": "Rua das Palmeiras, 450 - Jardins, São Paulo - SP",
+    "phone": "(11) 3456-7890",
+    "whatsapp": "11988887777",
+    "email": "contato@barbeariaimperial.com",
+    "monthlyRevenueGoal": 15000,
+    "workingHours": {
+      "segunda": {
+        "start": "08:00",
+        "end": "19:00",
+        "closed": false
+      },
+      "terca": {
+        "start": "08:00",
+        "end": "20:00",
+        "closed": false
+      },
+      "quarta": {
+        "start": "08:00",
+        "end": "20:00",
+        "closed": false
+      },
+      "quinta": {
+        "start": "08:00",
+        "end": "20:00",
+        "closed": false
+      },
+      "sexta": {
+        "start": "08:00",
+        "end": "20:30",
+        "closed": false
+      },
+      "sabado": {
+        "start": "08:00",
+        "end": "19:00",
+        "closed": false
+      },
+      "domingo": {
+        "start": "09:00",
+        "end": "14:00",
+        "closed": true
+      }
+    },
+    "blockedSlots": [
+      "12:30"
+    ],
+    "holidays": [
+      "2026-12-25",
+      "2026-01-01",
+      "2026-11-15",
+      "2026-04-21",
+      "2026-05-01",
+      "2026-09-07",
+      "2026-10-12",
+      "2026-11-02",
+      "2026-11-20"
+    ]
+  },
+  "products": [
+    {
+      "id": "prod-1",
+      "barbershopId": "shop-imperial",
+      "name": "Pomada Matte Efeito Seco 100g",
+      "category": "Modelador",
+      "price": 45,
+      "stock": 14,
+      "minStock": 5,
+      "image": "https://images.unsplash.com/photo-1597852074816-d933c4d2b988?auto=format&fit=crop&w=300&q=80",
+      "active": true
+    },
+    {
+      "id": "prod-2",
+      "barbershopId": "shop-imperial",
+      "name": "Óleo Hidratante para Barba 30ml",
+      "category": "Barba",
+      "price": 38,
+      "stock": 3,
+      "minStock": 5,
+      "image": "https://images.unsplash.com/photo-1608248597359-5f21a42bfae6?auto=format&fit=crop&w=300&q=80",
+      "active": true
+    },
+    {
+      "id": "prod-3",
+      "barbershopId": "shop-imperial",
+      "name": "Shampoo Anticaspa Refrescante 250ml",
+      "category": "Cabelo",
+      "price": 40,
+      "stock": 8,
+      "minStock": 4,
+      "image": "https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?auto=format&fit=crop&w=300&q=80",
+      "active": true
+    },
+    {
+      "id": "prod-4",
+      "barbershopId": "shop-imperial",
+      "name": "Balm Multifuncional para Barba 120g",
+      "category": "Barba",
+      "price": 42,
+      "stock": 2,
+      "minStock": 4,
+      "image": "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=300&q=80",
+      "active": true
+    }
+  ],
+  "orders": [],
+  "expenses": [
+    {
+      "id": "exp-1",
+      "barbershopId": "shop-imperial",
+      "label": "Compra de Lâminas descartáveis & Desinfetante",
+      "value": 120,
+      "date": "2026-10-07",
+      "time": "10:00",
+      "category": "Insumos",
+      "createdAt": "2026-10-07T02:18:15.597Z"
+    },
+    {
+      "id": "exp-2",
+      "barbershopId": "shop-imperial",
+      "label": "Conta de Energia Elétrica",
+      "value": 380,
+      "date": "2026-10-07",
+      "time": "11:15",
+      "category": "Contas Fixas",
+      "createdAt": "2026-10-07T02:18:15.597Z"
+    }
+  ],
+  "incomes": [
+    {
+      "id": "inc-1",
+      "barbershopId": "shop-imperial",
+      "label": "Venda de Pomada no Balcão",
+      "value": 45,
+      "date": "2026-10-07",
+      "time": "09:40",
+      "category": "Produtos",
+      "createdAt": "2026-10-07T02:18:15.597Z"
+    },
+    {
+      "id": "inc-apt-1792008900293",
+      "barbershopId": "shop-imperial",
+      "label": "Receita Serviço: Combo Master: Cabelo + Barba (undefined)",
+      "date": "2026-10-05",
+      "time": "11:00",
+      "category": "Serviço",
+      "appointmentId": "apt-2",
+      "createdAt": "2026-10-14T20:15:00.293Z"
+    },
+    {
+      "id": "inc-apt-1792008911083",
+      "barbershopId": "shop-imperial",
+      "label": "Receita Serviço: Corte Degradê & Social (undefined)",
+      "date": "2026-10-05",
+      "time": "10:00",
+      "category": "Serviço",
+      "appointmentId": "apt-1",
+      "createdAt": "2026-10-14T20:15:11.083Z"
+    }
+  ],
+  "promotions": [
+    {
+      "id": "promo-1",
+      "barbershopId": "shop-imperial",
+      "tag": "COMBO VIP",
+      "title": "Sexta Premium: Cabelo + Barba + Cerveja",
+      "description": "Faça o combo corte e barba e ganhe um chopp artesanal ou café expresso grátis.",
+      "price": 65,
+      "color": "#b45309",
+      "active": true
+    },
+    {
+      "id": "promo-2",
+      "barbershopId": "shop-imperial",
+      "tag": "PRIMEIRA VEZ",
+      "title": "Desconto de Boas-Vindas",
+      "description": "Agende seu primeiro corte pelo app e ganhe 15% de desconto direto no balcão.",
+      "price": 38,
+      "color": "#047857",
+      "active": true
+    },
+    {
+      "id": "promo-3",
+      "barbershopId": "shop-imperial",
+      "tag": "FIDELIDADE",
+      "title": "Clube Barba & Bigode",
+      "description": "Faça 4 barboterapias no mês e a 5ª sai totalmente na faixa!",
+      "price": 120,
+      "color": "#1d4ed8",
+      "active": true
+    }
+  ],
+  "notifications": [
+    {
+      "id": "notif-1",
+      "userId": "usr-client-1",
+      "title": "Agendamento Confirmado! 💈",
+      "message": "Seu corte Degradê & Social está marcado com Marcos Silva.",
+      "type": "appointment",
+      "read": false,
+      "createdAt": "2026-10-07T02:18:15.597Z"
+    },
+    {
+      "id": "notif-2",
+      "userId": "usr-admin-1",
+      "title": "Alerta de Estoque Baixo! ⚠️",
+      "message": "O produto Balm Multifuncional está com apenas 2 unidades em estoque.",
+      "type": "system",
+      "read": false,
+      "createdAt": "2026-10-07T02:18:15.597Z"
+    },
+    {
+      "id": "notif-1792028954839-client",
+      "userId": "client-1792028954802",
+      "title": "Novo Agendamento Confirmado! ✂️",
+      "message": "Seu agendamento de Corte Degradê & Social com Ben está marcado para 2026-10-15 às 09:00.",
+      "type": "appointment",
+      "read": false,
+      "referenceId": "apt-1792028954835",
+      "createdAt": "2026-10-15T01:49:14.839Z"
+    },
+    {
+      "id": "notif-1792028954839-barber",
+      "userId": "usr-admin-1792028283969",
+      "title": "Novo Corte na sua Agenda! 💈",
+      "message": "Ben Hur Sousa Monteiro agendou Corte Degradê & Social para 2026-10-15 às 09:00.",
+      "type": "appointment",
+      "read": false,
+      "referenceId": "apt-1792028954835",
+      "createdAt": "2026-10-15T01:49:14.839Z"
+    }
+  ],
+  "reviews": [
+    {
+      "id": "rev-1",
+      "appointmentId": "apt-seed-1",
+      "barberId": "barber-admin",
+      "barberName": "Marcos Silva",
+      "clientId": "usr-client-1",
+      "clientName": "Rodrigo Santoro",
+      "rating": 5,
+      "comment": "Atendimento impecável! O degradê navalhado ficou perfeito, recomendo demais.",
+      "createdAt": "2026-10-05T02:18:15.597Z"
+    },
+    {
+      "id": "rev-2",
+      "appointmentId": "apt-seed-2",
+      "barberId": "barber-lucas",
+      "barberName": "Lucas Andrade",
+      "clientId": "usr-client-2",
+      "clientName": "Gabriel Medina",
+      "rating": 5,
+      "comment": "A barboterapia com toalha quente é outro nível de relaxamento. Nota 10!",
+      "createdAt": "2026-10-06T02:18:15.597Z"
+    }
+  ]
+}

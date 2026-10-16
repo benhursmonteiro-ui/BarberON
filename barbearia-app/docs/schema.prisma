@@ -1,0 +1,184 @@
+// This is your Prisma schema file for BarberOn PRO
+// Learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql" // ou "sqlite" / "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Plan {
+  FREE
+  PRO
+}
+
+enum AppointmentStatus {
+  PENDENTE
+  CONFIRMADO
+  CONCLUIDO
+  CANCELADO
+}
+
+enum TransactionType {
+  RECEITA
+  DESPESA
+  COMISSAO
+}
+
+model Barbershop {
+  id           String      @id @default(uuid())
+  name         String
+  cnpjCpf      String?
+  phone        String
+  address      String?
+  plan         Plan        @default(PRO)
+  openHours    String      @default("09:00 às 20:00")
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  barbers      Barber[]
+  services     Service[]
+  customers    Customer[]
+  appointments Appointment[]
+  transactions FinancialTransaction[]
+}
+
+model Barber {
+  id             String          @id @default(uuid())
+  barbershopId   String
+  name           String
+  phone          String
+  email          String?
+  avatarUrl      String?
+  specialty      String?
+  commissionRate Float           @default(50.0) // 50%
+  isActive       Boolean         @default(true)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  barbershop     Barbershop      @relation(fields: [barbershopId], references: [id], onDelete: Cascade)
+  schedules      BarberSchedule[]
+  appointments   Appointment[]
+  transactions   FinancialTransaction[]
+
+  @@index([barbershopId])
+}
+
+model BarberSchedule {
+  id         String   @id @default(uuid())
+  barberId   String
+  dayOfWeek  Int      // 0 = Domingo, 6 = Sábado
+  startTime  String   // "09:00"
+  endTime    String   // "19:00"
+  lunchStart String?  // "12:00"
+  lunchEnd   String?  // "13:00"
+  isWorking  Boolean  @default(true)
+
+  barber     Barber   @relation(fields: [barberId], references: [id], onDelete: Cascade)
+
+  @@unique([barberId, dayOfWeek])
+}
+
+model Service {
+  id              String       @id @default(uuid())
+  barbershopId    String
+  name            String
+  description     String?
+  durationMinutes Int          @default(30)
+  price           Float
+  category        String       @default("cabelo")
+  isPopular       Boolean      @default(false)
+  isActive        Boolean      @default(true)
+  createdAt       DateTime     @default(now())
+
+  barbershop      Barbershop   @relation(fields: [barbershopId], references: [id], onDelete: Cascade)
+  appointments    Appointment[]
+
+  @@index([barbershopId])
+}
+
+model Customer {
+  id           String        @id @default(uuid())
+  barbershopId String
+  name         String
+  phone        String
+  email        String?
+  notes        String?       // Ficha técnica (degradê, alergias, formato)
+  totalVisits  Int           @default(0)
+  lastVisit    DateTime?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  barbershop   Barbershop    @relation(fields: [barbershopId], references: [id], onDelete: Cascade)
+  appointments Appointment[]
+  reminders    ReminderNotification[]
+
+  @@unique([barbershopId, phone])
+}
+
+model Appointment {
+  id               String            @id @default(uuid())
+  barbershopId     String
+  customerId       String
+  barberId         String
+  serviceId        String
+  date             DateTime          @db.Date
+  time             String            // "14:30"
+  status           AppointmentStatus @default(CONFIRMADO)
+  totalAmount      Float
+  barberCommission Float             @default(0.0)
+  notes            String?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  barbershop       Barbershop        @relation(fields: [barbershopId], references: [id], onDelete: Cascade)
+  customer         Customer          @relation(fields: [customerId], references: [id])
+  barber           Barber            @relation(fields: [barberId], references: [id])
+  service          Service           @relation(fields: [serviceId], references: [id])
+  transactions     FinancialTransaction[]
+  reminders        ReminderNotification[]
+
+  @@index([barbershopId, date])
+  @@index([barberId, date])
+  @@index([customerId])
+}
+
+model FinancialTransaction {
+  id            String          @id @default(uuid())
+  barbershopId  String
+  appointmentId String?
+  barberId      String?
+  type          TransactionType
+  category      String          // 'servico', 'produtos', 'aluguel', 'energia', 'comissao'
+  amount        Float
+  description   String
+  paymentMethod String          @default("pix")
+  date          DateTime        @db.Date
+  createdAt     DateTime        @default(now())
+
+  barbershop    Barbershop      @relation(fields: [barbershopId], references: [id], onDelete: Cascade)
+  appointment   Appointment?    @relation(fields: [appointmentId], references: [id], onDelete: SetNull)
+  barber        Barber?         @relation(fields: [barberId], references: [id], onDelete: SetNull)
+
+  @@index([barbershopId, date])
+}
+
+model ReminderNotification {
+  id            String      @id @default(uuid())
+  appointmentId String
+  customerId    String
+  type          String      // 'confirmacao', 'lembrete_2h', 'pos_venda'
+  status        String      @default("pendente")
+  scheduledFor  DateTime
+  sentAt        DateTime?
+  messageText   String
+  createdAt     DateTime    @default(now())
+
+  appointment   Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  customer      Customer    @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([status, scheduledFor])
+}

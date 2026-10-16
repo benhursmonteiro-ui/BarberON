@@ -1,0 +1,10 @@
+{
+  "name": "sistema-de-barbearia-root",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix barbearia-app run dev",
+    "build": "npm --prefix barbearia-app run build",
+    "start": "npm --prefix barbearia-app run start"
+  }
+}

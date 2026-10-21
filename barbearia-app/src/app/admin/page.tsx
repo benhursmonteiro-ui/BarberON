@@ -1689,7 +1689,7 @@ export default function AdminPortalPage() {
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', alignItems: 'flex-end' }}>
                       <a
-                        href={`https://pay.kiwify.com.br/SEU_CHECKOUT_AQUI?custom_id=${encodeURIComponent((shopConfig as any)?.shopId || shopSlug || 'shop-imperial')}&email=${encodeURIComponent(user?.email || (shopConfig as any)?.ownerEmail || '')}`}
+                        href={`https://pay.kiwify.com.br/qjfQUAu?custom_id=${encodeURIComponent((shopConfig as any)?.shopId || shopSlug || 'shop-imperial')}&email=${encodeURIComponent(user?.email || (shopConfig as any)?.ownerEmail || '')}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         style={{

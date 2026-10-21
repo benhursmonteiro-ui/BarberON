@@ -534,7 +534,7 @@ export default function SaaSPlatformHome() {
               <div>
                 <div style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--accent-gold)' }}>BarberOn PRO</div>
                 <div style={{ fontSize: '2.6rem', fontWeight: 900, marginTop: '0.5rem', marginBottom: '1.5rem' }}>
-                  R$ 89 <span style={{ fontSize: '0.9rem', color: 'var(--text-light)', fontWeight: 500 }}>/mês</span>
+                  R$ 100 <span style={{ fontSize: '0.9rem', color: 'var(--text-light)', fontWeight: 500 }}>/mês</span>
                 </div>
 
                 <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.85rem', fontSize: '0.92rem' }}>

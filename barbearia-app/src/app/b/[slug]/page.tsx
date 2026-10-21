@@ -110,14 +110,6 @@ export default function BarbershopTenantPage() {
             >
               <UserCheck size={17} /> Meus Agendamentos
             </button>
-
-            <Link
-              href={`/b/${slug}/login`}
-              className="nav-tab-btn"
-              style={{ textDecoration: 'none', background: 'rgba(217, 119, 6, 0.08)', color: 'var(--accent-gold-text)' }}
-            >
-              <LogIn size={17} /> Entrar
-            </Link>
           </nav>
 
           <div className="header-badge">

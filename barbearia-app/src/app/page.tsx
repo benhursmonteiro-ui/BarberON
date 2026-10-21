@@ -104,6 +104,13 @@ export default function SaaSPlatformHome() {
       const data = await res.json();
 
       if (res.ok && data.barbershop) {
+        // Se escolheu o Plano PRO, redireciona imediatamente para o checkout da Kiwify
+        if (selectedPlan === 'PRO') {
+          const checkoutUrl = `https://pay.kiwify.com.br/qjfQUAu?custom_id=${encodeURIComponent(data.barbershop.id || data.barbershop.slug)}&email=${encodeURIComponent(adminEmail)}`;
+          window.location.href = checkoutUrl;
+          return;
+        }
+
         setCreatedUrl(data.defaultUrl);
         setCreatedLoginUrl(data.loginUrl || `${data.defaultUrl}/login`);
         setCreatedAdminEmail(data.adminEmail || adminEmail);
@@ -624,33 +631,12 @@ export default function SaaSPlatformHome() {
                   </div>
                 )}
 
-                {/* Box com os 2 links próprios */}
+                {/* Único Link de Acesso Oficial (Área de Login) */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', marginBottom: '1.75rem', textAlign: 'left' }}>
-                  {/* Link de Agendamento */}
-                  <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '0.85rem 1rem' }}>
+                  <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '10px', padding: '1rem' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
-                      <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#0f172a', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                        <Calendar size={14} color="#059669" /> Link de Agendamento dos Clientes:
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => copyToClipboard(createdUrl, 'agendamento')}
-                        style={{ background: 'none', border: 'none', color: '#2563eb', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.25rem' }}
-                      >
-                        {copiedType === 'agendamento' ? <Check size={13} color="#059669" /> : <Copy size={13} />}
-                        {copiedType === 'agendamento' ? 'Copiado!' : 'Copiar'}
-                      </button>
-                    </div>
-                    <code style={{ fontSize: '0.85rem', color: '#334155', wordBreak: 'break-all' }}>
-                      {typeof window !== 'undefined' ? `${window.location.origin}${createdUrl}` : createdUrl}
-                    </code>
-                  </div>
-
-                  {/* Link Próprio da Área de Login */}
-                  <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '10px', padding: '0.85rem 1rem' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
-                      <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#92400e', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                        <LogIn size={14} color="#d97706" /> Link da Área de Login (Admin, Barbeiros e Clientes):
+                      <span style={{ fontSize: '0.82rem', fontWeight: 800, color: '#92400e', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                        <LogIn size={15} color="#d97706" /> Link Único de Acesso da Barbearia:
                       </span>
                       <button
                         type="button"
@@ -661,38 +647,33 @@ export default function SaaSPlatformHome() {
                         {copiedType === 'login' ? 'Copiado!' : 'Copiar'}
                       </button>
                     </div>
-                    <code style={{ fontSize: '0.85rem', color: '#b45309', wordBreak: 'break-all', fontWeight: 600 }}>
+                    <code style={{ fontSize: '0.88rem', color: '#b45309', wordBreak: 'break-all', fontWeight: 700 }}>
                       {typeof window !== 'undefined' ? `${window.location.origin}${createdLoginUrl || `${createdUrl}/login`}` : `${createdUrl}/login`}
                     </code>
+                    <p style={{ margin: '0.5rem 0 0 0', fontSize: '0.75rem', color: '#78350f' }}>
+                      Guarde esse link exclusivo. É por ele que o administrador e os barbeiros acessam seus respectivos painéis.
+                    </p>
                   </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                   <Link 
                     href={createdLoginUrl || `${createdUrl}/login`} 
                     className="btn-primary" 
-                    style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', background: '#d97706' }}
+                    style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', background: '#d97706', padding: '0.9rem' }}
                   >
-                    <LogIn size={16} /> Entrar no Login da Barbearia
+                    <LogIn size={18} /> Entrar na Área da Barbearia
                   </Link>
 
-                  <Link 
-                    href={createdUrl} 
-                    className="btn-primary" 
-                    style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem' }}
+                  <button 
+                    type="button" 
+                    className="btn-secondary" 
+                    onClick={() => setShowModal(false)}
+                    style={{ width: '100%' }}
                   >
-                    Ver Agendamento <ExternalLink size={16} />
-                  </Link>
+                    Concluir e Fechar
+                  </button>
                 </div>
-
-                <button 
-                  type="button" 
-                  className="btn-secondary" 
-                  onClick={() => setShowModal(false)}
-                  style={{ width: '100%', marginTop: '0.75rem' }}
-                >
-                  Concluir e Fechar
-                </button>
               </div>
             ) : (
               <form onSubmit={handleCreateBarbershop} style={{ display: 'flex', flexDirection: 'column', gap: '1.15rem' }}>

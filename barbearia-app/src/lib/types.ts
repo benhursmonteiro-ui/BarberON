@@ -239,6 +239,12 @@ export interface Barbershop {
   logoUrl?: string;
   instagram?: string;
   createdAt: string;
+
+  // Controle de Assinatura e Pagamento (Kiwify)
+  subscriptionStatus?: 'active' | 'past_due' | 'unpaid' | 'canceled';
+  subscriptionExpiresAt?: string; // Data ISO de expiração da mensalidade
+  kiwifyOrderId?: string;
+  kiwifySubscriptionId?: string;
 }
 
 export type BarbershopSettings = Barbershop;

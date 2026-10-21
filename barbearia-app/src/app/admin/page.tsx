@@ -159,7 +159,15 @@ export default function AdminPortalPage() {
   // Se o usuário estiver autenticado em uma barbearia cadastrada (ex: Monteiro), ele não está em modo demo
   const isDemo = !shopSlug && !user?.barbershopId;
   const currentPlan = isDemo && previewPlan ? previewPlan : (shopConfig?.plan || (user as any)?.plan || 'FREE');
-  const isPro = currentPlan === 'PRO';
+  
+  // Validação de pagamento e expiração da Kiwify
+  const subscriptionStatus = (shopConfig as any)?.subscriptionStatus || 'active';
+  const subscriptionExpiresAt = (shopConfig as any)?.subscriptionExpiresAt;
+  const isSubscriptionExpired = Boolean(subscriptionExpiresAt && new Date() > new Date(subscriptionExpiresAt));
+  const isSubscriptionOverdue = subscriptionStatus === 'past_due' || subscriptionStatus === 'unpaid' || subscriptionStatus === 'canceled' || isSubscriptionExpired;
+
+  // Só é PRO se o plano for PRO E o pagamento não estiver em atraso / bloqueado
+  const isPro = currentPlan === 'PRO' && (!isSubscriptionOverdue || Boolean(isDemo && previewPlan));
 
   // Executive Schedule & Horários States (Paid PRO Plan)
   const [scheduleViewMode, setScheduleViewMode] = useState<'grade' | 'calendario' | 'regras'>('grade');
@@ -1679,27 +1687,71 @@ export default function AdminPortalPage() {
                       </p>
                     </div>
 
-                    <button
-                      type="button"
-                      onClick={() => setPreviewPlan('PRO')}
-                      style={{
-                        background: 'linear-gradient(135deg, #f59e0b, #d97706)',
-                        color: '#000000',
-                        border: 'none',
-                        padding: '0.75rem 1.4rem',
-                        borderRadius: '8px',
-                        fontWeight: 800,
-                        fontSize: '0.85rem',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.5rem',
-                        boxShadow: '0 4px 15px rgba(245, 158, 11, 0.4)'
-                      }}
-                    >
-                      <Sparkles size={16} /> Ativar Versão Paga (Plano PRO)
-                    </button>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', alignItems: 'flex-end' }}>
+                      <a
+                        href={`https://pay.kiwify.com.br/SEU_CHECKOUT_AQUI?custom_id=${encodeURIComponent((shopConfig as any)?.shopId || shopSlug || 'shop-imperial')}&email=${encodeURIComponent(user?.email || (shopConfig as any)?.ownerEmail || '')}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          background: 'linear-gradient(135deg, #10b981, #059669)',
+                          color: '#ffffff',
+                          textDecoration: 'none',
+                          padding: '0.75rem 1.4rem',
+                          borderRadius: '8px',
+                          fontWeight: 800,
+                          fontSize: '0.85rem',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.5rem',
+                          boxShadow: '0 4px 15px rgba(16, 185, 129, 0.4)'
+                        }}
+                      >
+                        <ExternalLink size={16} /> Assinar PRO via Kiwify (R$ 69,90/mês)
+                      </a>
+
+                      <button
+                        type="button"
+                        onClick={() => setPreviewPlan('PRO')}
+                        style={{
+                          background: 'rgba(255, 255, 255, 0.08)',
+                          color: '#f59e0b',
+                          border: '1px solid rgba(245, 158, 11, 0.3)',
+                          padding: '0.45rem 1rem',
+                          borderRadius: '6px',
+                          fontWeight: 700,
+                          fontSize: '0.75rem',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.35rem'
+                        }}
+                      >
+                        <Sparkles size={13} /> Pré-visualizar Modo Demo
+                      </button>
+                    </div>
                   </div>
+
+                  {/* Alerta explícito de bloqueio se estiver atrasado */}
+                  {isSubscriptionOverdue && (
+                    <div style={{
+                      background: '#fef2f2',
+                      border: '1px solid #ef4444',
+                      borderRadius: '12px',
+                      padding: '1rem 1.5rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '1rem',
+                      color: '#991b1b'
+                    }}>
+                      <AlertTriangle size={24} color="#dc2626" />
+                      <div>
+                        <div style={{ fontWeight: 800, fontSize: '0.95rem' }}>Assinatura do Plano PRO Vencida / Pendente</div>
+                        <div style={{ fontSize: '0.8rem', color: '#b91c1c' }}>
+                          O acesso aos recursos PRO e a criação de novos agendamentos estão temporariamente bloqueados. Regularize o pagamento na Kiwify para restabelecimento imediato.
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Free Plan basic KPI Cards */}
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>

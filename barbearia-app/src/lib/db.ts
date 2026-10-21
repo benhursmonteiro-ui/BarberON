@@ -752,7 +752,11 @@ export async function getShopConfig(shopIdOrSlug?: string): Promise<ShopConfig> 
     instagram: shop ? (shop.instagram || '') : (db.shopConfig.instagram || ''),
     openHours: shop ? shop.openHours : db.shopConfig.openHours,
     plan: shop?.plan || db.shopConfig.plan || 'PRO',
-  };
+    subscriptionStatus: shop?.subscriptionStatus || 'active',
+    subscriptionExpiresAt: shop?.subscriptionExpiresAt,
+    shopSlug: shop?.slug,
+    shopId: shop?.id,
+  } as any;
 }
 
 export async function updateShopConfig(data: Partial<ShopConfig>, shopIdOrSlug?: string): Promise<ShopConfig> {
@@ -1087,6 +1091,24 @@ export async function createAppointment(data: {
     const b = db.barbers.find((bb) => bb.id === data.barberId);
     return b && b.barbershopId === s.id;
   }) || db.barbershops[0];
+
+  // REGRA DE NEGÓCIO: BLOQUEIO POR INADIMPLÊNCIA / EXPIRAÇÃO DA ASSINATURA PRO
+  if (targetShop && targetShop.plan === 'PRO') {
+    if (targetShop.subscriptionStatus === 'unpaid' || targetShop.subscriptionStatus === 'canceled' || targetShop.subscriptionStatus === 'past_due') {
+      return {
+        error: 'A barbearia está temporariamente indisponível para novos agendamentos devido a pendência na assinatura.',
+      };
+    }
+
+    if (targetShop.subscriptionExpiresAt) {
+      const expiresAt = new Date(targetShop.subscriptionExpiresAt);
+      if (new Date() > expiresAt) {
+        return {
+          error: 'A barbearia está com a assinatura do sistema expirada. Regularize na Kiwify para reativar.',
+        };
+      }
+    }
+  }
 
   // REGRA DE NEGÓCIO: PLANO GRATUITO TEM LIMITE DE 30 AGENDAMENTOS POR MÊS
   if (targetShop && targetShop.plan === 'FREE') {
@@ -2141,6 +2163,38 @@ export async function createCustomer(data: {
   db.customers.push(newCust);
   await saveDb(db);
   return newCust;
+}
+
+export async function updateBarbershopSubscription(data: {
+  barbershopIdOrSlug?: string;
+  email?: string;
+  plan: 'FREE' | 'PRO';
+  status: 'active' | 'past_due' | 'unpaid' | 'canceled';
+  expiresAt?: string;
+  orderId?: string;
+  subscriptionId?: string;
+}): Promise<Barbershop | null> {
+  const db = await ensureDb();
+  
+  let shop = db.barbershops.find((s) => 
+    (data.barbershopIdOrSlug && (s.id === data.barbershopIdOrSlug || s.slug === data.barbershopIdOrSlug)) ||
+    (data.email && s.ownerEmail.toLowerCase() === data.email.toLowerCase())
+  );
+
+  if (!shop && db.barbershops.length === 1) {
+    shop = db.barbershops[0];
+  }
+
+  if (!shop) return null;
+
+  shop.plan = data.plan;
+  shop.subscriptionStatus = data.status;
+  if (data.expiresAt) shop.subscriptionExpiresAt = data.expiresAt;
+  if (data.orderId) shop.kiwifyOrderId = data.orderId;
+  if (data.subscriptionId) shop.kiwifySubscriptionId = data.subscriptionId;
+
+  await saveDb(db);
+  return shop;
 }
 
 

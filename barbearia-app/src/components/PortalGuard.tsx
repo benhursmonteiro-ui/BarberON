@@ -30,17 +30,18 @@ export default function PortalGuard({
   allow: UserRole;
   children: React.ReactNode;
 }) {
-  const { user, role, loading, shopSlug, logout } = useAuth();
+  const { user, role, loading, shopSlug, logout, switchRole } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
     if (loading) return;
     if (!user || !role) {
-      router.replace(shopSlug ? `/b/${shopSlug}/login` : '/login');
+      // Modo Demonstração Livre: se entrar direto em /admin, /barber ou /client sem login, ativa o perfil de demonstração
+      switchRole(allow);
     } else if (role !== allow) {
       router.replace(ROLE_HOME[role]);
     }
-  }, [loading, user, role, allow, shopSlug, router]);
+  }, [loading, user, role, allow, router, switchRole]);
 
   if (loading || !user || role !== allow) {
     return (

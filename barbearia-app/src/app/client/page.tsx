@@ -27,12 +27,12 @@ import Link from 'next/link';
 import BookingFlow from '@/components/BookingFlow';
 
 export default function ClientPortalPage() {
-  const { user, shopSlug, updateUserProfile } = useAuth();
+  const { user, shopSlug, updateUserProfile, demoPlan, setDemoPlan } = useAuth();
 
   const [currentShop, setCurrentShop] = useState<any>(null);
   const [previewPlan, setPreviewPlan] = useState<'PRO' | 'FREE' | null>(null);
   const isDemo = !shopSlug && !user?.barbershopId;
-  const currentPlan = isDemo && previewPlan ? previewPlan : (currentShop?.plan || (user as any)?.plan || 'FREE');
+  const currentPlan = isDemo ? (previewPlan || demoPlan) : (currentShop?.plan || (user as any)?.plan || 'FREE');
   const isPro = currentPlan === 'PRO';
 
   const [activeTab, setActiveTab] = useState<

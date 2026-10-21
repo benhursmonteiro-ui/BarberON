@@ -28,7 +28,7 @@ import {
 import Link from 'next/link';
 
 export default function BarberPortalPage() {
-  const { user, role, shopSlug } = useAuth();
+  const { user, role, shopSlug, demoPlan, setDemoPlan } = useAuth();
 
   const [activeTab, setActiveTab] = useState<
     'dashboard' | 'schedule' | 'commissions' | 'history' | 'availability' | 'reviews' | 'profile'
@@ -45,7 +45,7 @@ export default function BarberPortalPage() {
   const [shopConfig, setShopConfig] = useState<any>(null);
   const [previewPlan, setPreviewPlan] = useState<'PRO' | 'FREE' | null>(null);
   const isDemo = !shopSlug && !user?.barbershopId;
-  const currentPlan = isDemo && previewPlan ? previewPlan : (shopConfig?.plan || (user as any)?.plan || 'FREE');
+  const currentPlan = isDemo ? (previewPlan || demoPlan) : (shopConfig?.plan || (user as any)?.plan || 'FREE');
   const isPro = currentPlan === 'PRO';
 
   // V2 Schedule Management States (matching Admin)

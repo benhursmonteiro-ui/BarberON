@@ -14,6 +14,8 @@ interface AuthContextType {
   registerClient: (data: { name: string; email: string; password: string; phone: string; slug?: string }) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
   switchRole: (newRole: UserRole, slug?: string) => Promise<void>;
+  demoPlan: 'FREE' | 'PRO';
+  setDemoPlan: (plan: 'FREE' | 'PRO') => void;
   resetPassword: (email: string) => Promise<{ success: boolean; message: string }>;
   updateUserProfile: (data: Partial<User>) => Promise<void>;
 }
@@ -63,6 +65,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [shopSlug, setShopSlug] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [demoPlan, setDemoPlanState] = useState<'FREE' | 'PRO'>('PRO');
   const router = useRouter();
   const pathname = usePathname();
 
@@ -72,12 +75,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const stored = localStorage.getItem(SESSION_KEY);
       if (stored) setUser(JSON.parse(stored));
       setShopSlug(localStorage.getItem(SHOP_KEY));
+      const savedDemoPlan = localStorage.getItem('barberon_demo_plan') as 'FREE' | 'PRO';
+      if (savedDemoPlan === 'FREE' || savedDemoPlan === 'PRO') {
+        setDemoPlanState(savedDemoPlan);
+      }
     } catch {
       setUser(null);
     } finally {
       setLoading(false);
     }
   }, []);
+
+  const setDemoPlan = (plan: 'FREE' | 'PRO') => {
+    setDemoPlanState(plan);
+    try {
+      localStorage.setItem('barberon_demo_plan', plan);
+    } catch {}
+  };
 
   // Salva a sessão e redireciona cada perfil para a sua própria área
   const startSession = (u: User, slug?: string) => {
@@ -182,6 +196,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         registerClient,
         logout,
         switchRole,
+        demoPlan,
+        setDemoPlan,
         resetPassword,
         updateUserProfile,
       }}

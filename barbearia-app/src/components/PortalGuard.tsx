@@ -55,6 +55,8 @@ export default function PortalGuard({
   }
 
   const info = ROLE_LABEL[role];
+  const { demoPlan, setDemoPlan } = useAuth();
+  const isDemo = !shopSlug && !user?.barbershopId;
 
   return (
     <>
@@ -62,19 +64,33 @@ export default function PortalGuard({
         background: '#090d16',
         color: '#f8fafc',
         borderBottom: '1px solid #1e293b',
-        padding: '0.5rem 1rem',
-        fontSize: '0.82rem',
+        padding: '0.45rem 1rem',
+        fontSize: '0.8rem',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
+        flexWrap: 'wrap',
         gap: '0.75rem',
         position: 'sticky',
         top: 0,
         zIndex: 9999,
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+        {/* Left: Role and User */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
+          <span style={{
+            background: '#d97706',
+            color: '#ffffff',
+            fontWeight: 800,
+            fontSize: '0.65rem',
+            padding: '0.15rem 0.45rem',
+            borderRadius: '4px',
+            letterSpacing: '0.05em',
+            textTransform: 'uppercase'
+          }}>
+            DEMO INTERATIVA
+          </span>
           <span style={{ color: '#94a3b8' }}>
-            Conectado como <strong style={{ color: '#f1f5f9' }}>{user.name}</strong>
+            Usuário: <strong style={{ color: '#f1f5f9' }}>{user.name}</strong>
           </span>
           <span style={{
             background: info.color,
@@ -89,25 +105,134 @@ export default function PortalGuard({
           </span>
         </div>
 
-        <button
-          type="button"
-          onClick={logout}
-          style={{
-            background: 'rgba(239, 68, 68, 0.15)',
-            color: '#fca5a5',
-            border: '1px solid rgba(239, 68, 68, 0.35)',
-            borderRadius: '6px',
-            padding: '0.3rem 0.75rem',
-            fontSize: '0.78rem',
-            fontWeight: 700,
-            cursor: 'pointer',
-            display: 'flex',
+        {/* Center: FREE vs PRO Plan Selector */}
+        {isDemo && (
+          <div style={{
+            display: 'inline-flex',
             alignItems: 'center',
-            gap: '0.35rem',
-          }}
-        >
-          <LogOut size={14} /> Sair
-        </button>
+            background: '#1e293b',
+            borderRadius: '8px',
+            padding: '2px',
+            border: '1px solid #334155',
+            gap: '2px'
+          }}>
+            <button
+              type="button"
+              onClick={() => setDemoPlan('FREE')}
+              style={{
+                padding: '0.25rem 0.65rem',
+                fontSize: '0.72rem',
+                fontWeight: 700,
+                borderRadius: '6px',
+                border: 'none',
+                cursor: 'pointer',
+                background: demoPlan === 'FREE' ? '#475569' : 'transparent',
+                color: demoPlan === 'FREE' ? '#ffffff' : '#94a3b8',
+                transition: 'all 0.15s ease'
+              }}
+            >
+              Versão Gratuita
+            </button>
+            <button
+              type="button"
+              onClick={() => setDemoPlan('PRO')}
+              style={{
+                padding: '0.25rem 0.65rem',
+                fontSize: '0.72rem',
+                fontWeight: 800,
+                borderRadius: '6px',
+                border: 'none',
+                cursor: 'pointer',
+                background: demoPlan === 'PRO' ? 'linear-gradient(135deg, #f59e0b, #d97706)' : 'transparent',
+                color: demoPlan === 'PRO' ? '#ffffff' : '#fbbf24',
+                boxShadow: demoPlan === 'PRO' ? '0 1px 4px rgba(217,119,6,0.3)' : 'none',
+                transition: 'all 0.15s ease'
+              }}
+            >
+              💎 Versão Paga (PRO)
+            </button>
+          </div>
+        )}
+
+        {/* Right: Switch Role Buttons & Logout */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', flexWrap: 'wrap' }}>
+          <span style={{ color: '#64748b', fontSize: '0.72rem' }}>Ver Tela:</span>
+          
+          <button
+            type="button"
+            onClick={() => switchRole('admin')}
+            style={{
+              background: role === 'admin' ? '#3b82f6' : '#1e293b',
+              color: '#ffffff',
+              border: 'none',
+              borderRadius: '4px',
+              padding: '0.25rem 0.55rem',
+              cursor: 'pointer',
+              fontSize: '0.73rem',
+              fontWeight: 600,
+              transition: 'all 0.15s ease'
+            }}
+          >
+            Admin
+          </button>
+
+          <button
+            type="button"
+            onClick={() => switchRole('barber')}
+            style={{
+              background: role === 'barber' ? '#8b5cf6' : '#1e293b',
+              color: '#ffffff',
+              border: 'none',
+              borderRadius: '4px',
+              padding: '0.25rem 0.55rem',
+              cursor: 'pointer',
+              fontSize: '0.73rem',
+              fontWeight: 600,
+              transition: 'all 0.15s ease'
+            }}
+          >
+            Barbeiro
+          </button>
+
+          <button
+            type="button"
+            onClick={() => switchRole('client')}
+            style={{
+              background: role === 'client' ? '#10b981' : '#1e293b',
+              color: '#ffffff',
+              border: 'none',
+              borderRadius: '4px',
+              padding: '0.25rem 0.55rem',
+              cursor: 'pointer',
+              fontSize: '0.73rem',
+              fontWeight: 600,
+              transition: 'all 0.15s ease'
+            }}
+          >
+            Cliente
+          </button>
+
+          <button
+            type="button"
+            onClick={logout}
+            style={{
+              background: 'rgba(239, 68, 68, 0.15)',
+              color: '#fca5a5',
+              border: '1px solid rgba(239, 68, 68, 0.35)',
+              borderRadius: '4px',
+              padding: '0.25rem 0.55rem',
+              fontSize: '0.73rem',
+              fontWeight: 700,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.25rem',
+              marginLeft: '0.25rem'
+            }}
+          >
+            <LogOut size={12} /> Sair
+          </button>
+        </div>
       </div>
       {children}
     </>

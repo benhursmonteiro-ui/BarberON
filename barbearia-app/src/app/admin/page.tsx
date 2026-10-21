@@ -45,7 +45,7 @@ import {
 import Link from 'next/link';
 
 export default function AdminPortalPage() {
-  const { user, role, loading: authLoading, shopSlug } = useAuth();
+  const { user, role, loading: authLoading, shopSlug, demoPlan, setDemoPlan } = useAuth();
   const router = useRouter();
 
   // Navigation Tabs for all 12 modules
@@ -158,16 +158,16 @@ export default function AdminPortalPage() {
 
   // Se o usuário estiver autenticado em uma barbearia cadastrada (ex: Monteiro), ele não está em modo demo
   const isDemo = !shopSlug && !user?.barbershopId;
-  const currentPlan = isDemo && previewPlan ? previewPlan : (shopConfig?.plan || (user as any)?.plan || 'FREE');
+  const currentPlan = isDemo ? (previewPlan || demoPlan) : (shopConfig?.plan || (user as any)?.plan || 'FREE');
   
-  // Validação de pagamento e expiração da Kiwify
+  // Validação de pagamento e expiração
   const subscriptionStatus = (shopConfig as any)?.subscriptionStatus || 'active';
   const subscriptionExpiresAt = (shopConfig as any)?.subscriptionExpiresAt;
   const isSubscriptionExpired = Boolean(subscriptionExpiresAt && new Date() > new Date(subscriptionExpiresAt));
   const isSubscriptionOverdue = subscriptionStatus === 'past_due' || subscriptionStatus === 'unpaid' || subscriptionStatus === 'canceled' || isSubscriptionExpired;
 
-  // Só é PRO se o plano for PRO E o pagamento não estiver em atraso / bloqueado
-  const isPro = currentPlan === 'PRO' && (!isSubscriptionOverdue || Boolean(isDemo && previewPlan));
+  // Só é PRO se o plano for PRO E (não vencido OU for demonstração)
+  const isPro = currentPlan === 'PRO' && (!isSubscriptionOverdue || Boolean(isDemo));
 
   // Executive Schedule & Horários States (Paid PRO Plan)
   const [scheduleViewMode, setScheduleViewMode] = useState<'grade' | 'calendario' | 'regras'>('grade');

@@ -17,6 +17,7 @@ import {
   User, 
   UserRole 
 } from './types';
+import { supabase } from './supabase';
 
 const DATA_DIR = path.join(process.cwd(), 'data');
 const DB_FILE = path.join(DATA_DIR, 'database.json');
@@ -1957,6 +1958,21 @@ export async function createBarbershop(data: {
   db.services.push(...defaultServices);
 
   await saveDb(db);
+
+  // Sincroniza diretamente na tabela 'barbershops' do Supabase / PostgreSQL
+  try {
+    await supabase.from('barbershops').insert([{
+      id: newShop.id,
+      name: newShop.name,
+      phone: newShop.ownerPhone,
+      address: newShop.address || '',
+      plan: newShop.plan,
+      open_hours: newShop.openHours || '08:00 às 20:00',
+    }]);
+  } catch (err) {
+    console.warn('Aviso: Falha ao sincronizar barbearia diretamente no Supabase:', err);
+  }
+
   return { 
     barbershop: newShop, 
     defaultUrl: `/b/${newShop.slug}`,

@@ -106,61 +106,59 @@ export default function PortalGuard({
         </div>
 
         {/* Center: FREE vs PRO Plan Selector */}
-        {isDemo && (
-          <div style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            background: '#1e293b',
-            borderRadius: '8px',
-            padding: '2px',
-            border: '1px solid #334155',
-            gap: '2px'
-          }}>
-            <button
-              type="button"
-              onClick={() => {
-                setDemoPlan('FREE');
-                const path = role === 'admin' ? '/admin' : role === 'barber' ? '/barber' : '/client';
-                router.push(`${path}?plan=FREE`);
-              }}
-              style={{
-                padding: '0.25rem 0.65rem',
-                fontSize: '0.72rem',
-                fontWeight: 700,
-                borderRadius: '6px',
-                border: 'none',
-                cursor: 'pointer',
-                background: demoPlan === 'FREE' ? '#475569' : 'transparent',
-                color: demoPlan === 'FREE' ? '#ffffff' : '#94a3b8',
-                transition: 'all 0.15s ease'
-              }}
-            >
-              Versão Gratuita
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setDemoPlan('PRO');
-                const path = role === 'admin' ? '/admin' : role === 'barber' ? '/barber' : '/client';
-                router.push(`${path}?plan=PRO`);
-              }}
-              style={{
-                padding: '0.25rem 0.65rem',
-                fontSize: '0.72rem',
-                fontWeight: 800,
-                borderRadius: '6px',
-                border: 'none',
-                cursor: 'pointer',
-                background: demoPlan === 'PRO' ? 'linear-gradient(135deg, #f59e0b, #d97706)' : 'transparent',
-                color: demoPlan === 'PRO' ? '#ffffff' : '#fbbf24',
-                boxShadow: demoPlan === 'PRO' ? '0 1px 4px rgba(217,119,6,0.3)' : 'none',
-                transition: 'all 0.15s ease'
-              }}
-            >
-              💎 Versão Paga (PRO)
-            </button>
-          </div>
-        )}
+        <div style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          background: '#1e293b',
+          borderRadius: '8px',
+          padding: '2px',
+          border: '1px solid #334155',
+          gap: '2px'
+        }}>
+          <button
+            type="button"
+            onClick={() => {
+              setDemoPlan('FREE');
+              const path = role === 'admin' ? '/admin' : role === 'barber' ? '/barber' : '/client';
+              window.location.href = `${path}?plan=FREE`;
+            }}
+            style={{
+              padding: '0.25rem 0.65rem',
+              fontSize: '0.72rem',
+              fontWeight: 700,
+              borderRadius: '6px',
+              border: 'none',
+              cursor: 'pointer',
+              background: demoPlan === 'FREE' ? '#475569' : 'transparent',
+              color: demoPlan === 'FREE' ? '#ffffff' : '#94a3b8',
+              transition: 'all 0.15s ease'
+            }}
+          >
+            Versão Gratuita
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setDemoPlan('PRO');
+              const path = role === 'admin' ? '/admin' : role === 'barber' ? '/barber' : '/client';
+              window.location.href = `${path}?plan=PRO`;
+            }}
+            style={{
+              padding: '0.25rem 0.65rem',
+              fontSize: '0.72rem',
+              fontWeight: 800,
+              borderRadius: '6px',
+              border: 'none',
+              cursor: 'pointer',
+              background: demoPlan === 'PRO' ? 'linear-gradient(135deg, #f59e0b, #d97706)' : 'transparent',
+              color: demoPlan === 'PRO' ? '#ffffff' : '#fbbf24',
+              boxShadow: demoPlan === 'PRO' ? '0 1px 4px rgba(217,119,6,0.3)' : 'none',
+              transition: 'all 0.15s ease'
+            }}
+          >
+            💎 Versão Paga (PRO)
+          </button>
+        </div>
 
         {/* Right: Switch Role Buttons & Logout */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', flexWrap: 'wrap' }}>

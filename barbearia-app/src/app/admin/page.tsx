@@ -165,11 +165,12 @@ export default function AdminPortalPage() {
     }
   };
 
-  // Se o usuário estiver autenticado em uma barbearia cadastrada (ex: Monteiro), ele não está em modo demo
+  // Modo de demonstração ou visualização de planos
   const isDemo = !shopSlug && !user?.barbershopId;
-  const currentPlan = isDemo 
-    ? (urlPlan || previewPlan || demoPlan || 'FREE') 
-    : (shopConfig?.plan || (user as any)?.plan || 'FREE');
+  // urlPlan ou previewPlan têm prioridade máxima para demonstração e testes imediatos
+  const currentPlan = (urlPlan || previewPlan) 
+    ? (urlPlan || previewPlan!)
+    : (isDemo ? (demoPlan || 'FREE') : (shopConfig?.plan || (user as any)?.plan || 'FREE'));
   
   // Validação de pagamento e expiração
   const subscriptionStatus = (shopConfig as any)?.subscriptionStatus || 'active';
@@ -177,8 +178,8 @@ export default function AdminPortalPage() {
   const isSubscriptionExpired = Boolean(subscriptionExpiresAt && new Date() > new Date(subscriptionExpiresAt));
   const isSubscriptionOverdue = subscriptionStatus === 'past_due' || subscriptionStatus === 'unpaid' || subscriptionStatus === 'canceled' || isSubscriptionExpired;
 
-  // Só é PRO se o plano for PRO E (não vencido OU for demonstração)
-  const isPro = currentPlan === 'PRO' && (!isSubscriptionOverdue || Boolean(isDemo));
+  // Só é PRO se o plano for PRO E (não vencido OU for demonstração/teste de visualização)
+  const isPro = currentPlan === 'PRO' && (!isSubscriptionOverdue || Boolean(isDemo || urlPlan || previewPlan));
 
   // Executive Schedule & Horários States (Paid PRO Plan)
   const [scheduleViewMode, setScheduleViewMode] = useState<'grade' | 'calendario' | 'regras'>('grade');
@@ -606,7 +607,63 @@ export default function AdminPortalPage() {
             </p>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+            {/* Seletor Visual Imediato de Versão (Gratuita vs PRO) */}
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              background: '#f1f5f9',
+              borderRadius: '8px',
+              padding: '3px',
+              border: '1px solid #cbd5e1',
+              gap: '3px'
+            }}>
+              <button
+                type="button"
+                onClick={() => {
+                  setPreviewPlan('FREE');
+                  setDemoPlan('FREE');
+                  router.push('/admin?plan=FREE');
+                }}
+                style={{
+                  padding: '0.35rem 0.75rem',
+                  fontSize: '0.75rem',
+                  fontWeight: 800,
+                  borderRadius: '6px',
+                  border: 'none',
+                  cursor: 'pointer',
+                  background: !isPro ? '#ffffff' : 'transparent',
+                  color: !isPro ? '#0f172a' : '#64748b',
+                  boxShadow: !isPro ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                  transition: 'all 0.15s ease'
+                }}
+              >
+                Versão Gratuita
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setPreviewPlan('PRO');
+                  setDemoPlan('PRO');
+                  router.push('/admin?plan=PRO');
+                }}
+                style={{
+                  padding: '0.35rem 0.85rem',
+                  fontSize: '0.75rem',
+                  fontWeight: 900,
+                  borderRadius: '6px',
+                  border: 'none',
+                  cursor: 'pointer',
+                  background: isPro ? 'linear-gradient(135deg, #f59e0b, #d97706)' : 'transparent',
+                  color: isPro ? '#ffffff' : '#b45309',
+                  boxShadow: isPro ? '0 2px 6px rgba(217,119,6,0.35)' : 'none',
+                  transition: 'all 0.15s ease'
+                }}
+              >
+                💎 Versão Paga (PRO)
+              </button>
+            </div>
+
             <button
               type="button"
               onClick={loadAllData}
@@ -645,6 +702,154 @@ export default function AdminPortalPage() {
             </Link>
           </div>
         </header>
+
+        {/* PRO Modules Quick Access Bar when in PRO */}
+        {isPro && (
+          <div style={{
+            background: 'linear-gradient(90deg, #1e293b 0%, #0f172a 100%)',
+            borderBottom: '1px solid #d97706',
+            padding: '0.65rem 2rem',
+            color: '#ffffff',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: '0.75rem',
+            fontSize: '0.8rem'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+              <span style={{
+                background: '#d97706',
+                color: '#ffffff',
+                padding: '0.15rem 0.5rem',
+                borderRadius: '4px',
+                fontWeight: 900,
+                fontSize: '0.7rem',
+                letterSpacing: '0.05em'
+              }}>
+                💎 VERSÃO PAGA (PRO) ATIVA
+              </span>
+              <span style={{ color: '#cbd5e1' }}>
+                Todos os 12 módulos liberados. Clique direto na tela que deseja visualizar:
+              </span>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap' }}>
+              <button
+                type="button"
+                onClick={() => setActiveTab('dashboard')}
+                style={{
+                  background: activeTab === 'dashboard' ? '#d97706' : 'rgba(255,255,255,0.08)',
+                  color: '#ffffff',
+                  border: 'none',
+                  padding: '0.25rem 0.55rem',
+                  borderRadius: '4px',
+                  fontSize: '0.72rem',
+                  fontWeight: 700,
+                  cursor: 'pointer'
+                }}
+              >
+                1. Painel Executivo
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('customers')}
+                style={{
+                  background: activeTab === 'customers' ? '#d97706' : 'rgba(255,255,255,0.08)',
+                  color: '#ffffff',
+                  border: 'none',
+                  padding: '0.25rem 0.55rem',
+                  borderRadius: '4px',
+                  fontSize: '0.72rem',
+                  fontWeight: 700,
+                  cursor: 'pointer'
+                }}
+              >
+                5. Clientes
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('finance')}
+                style={{
+                  background: activeTab === 'finance' ? '#d97706' : 'rgba(255,255,255,0.08)',
+                  color: '#ffffff',
+                  border: 'none',
+                  padding: '0.25rem 0.55rem',
+                  borderRadius: '4px',
+                  fontSize: '0.72rem',
+                  fontWeight: 700,
+                  cursor: 'pointer'
+                }}
+              >
+                7. Financeiro & Fiado
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('schedule-config')}
+                style={{
+                  background: activeTab === 'schedule-config' ? '#d97706' : 'rgba(255,255,255,0.08)',
+                  color: '#ffffff',
+                  border: 'none',
+                  padding: '0.25rem 0.55rem',
+                  borderRadius: '4px',
+                  fontSize: '0.72rem',
+                  fontWeight: 700,
+                  cursor: 'pointer'
+                }}
+              >
+                8. Grade V2
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('inventory')}
+                style={{
+                  background: activeTab === 'inventory' ? '#d97706' : 'rgba(255,255,255,0.08)',
+                  color: '#ffffff',
+                  border: 'none',
+                  padding: '0.25rem 0.55rem',
+                  borderRadius: '4px',
+                  fontSize: '0.72rem',
+                  fontWeight: 700,
+                  cursor: 'pointer'
+                }}
+              >
+                9. Estoque
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('promotions')}
+                style={{
+                  background: activeTab === 'promotions' ? '#d97706' : 'rgba(255,255,255,0.08)',
+                  color: '#ffffff',
+                  border: 'none',
+                  padding: '0.25rem 0.55rem',
+                  borderRadius: '4px',
+                  fontSize: '0.72rem',
+                  fontWeight: 700,
+                  cursor: 'pointer'
+                }}
+              >
+                10. Marketing
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('analytics')}
+                style={{
+                  background: activeTab === 'analytics' ? '#d97706' : 'rgba(255,255,255,0.08)',
+                  color: '#ffffff',
+                  border: 'none',
+                  padding: '0.25rem 0.55rem',
+                  borderRadius: '4px',
+                  fontSize: '0.72rem',
+                  fontWeight: 700,
+                  cursor: 'pointer'
+                }}
+              >
+                11. Relatórios
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Content Body */}
         <div style={{ 

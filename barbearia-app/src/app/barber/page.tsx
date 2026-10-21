@@ -26,9 +26,10 @@ import {
   ShieldAlert
 } from 'lucide-react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 
 export default function BarberPortalPage() {
+  const router = useRouter();
   const { user, role, shopSlug, demoPlan, setDemoPlan } = useAuth();
   const searchParams = useSearchParams();
   const urlPlan = searchParams.get('plan') as 'PRO' | 'FREE' | null;
@@ -55,9 +56,9 @@ export default function BarberPortalPage() {
   const [shopConfig, setShopConfig] = useState<any>(null);
   const [previewPlan, setPreviewPlan] = useState<'PRO' | 'FREE' | null>(null);
   const isDemo = !shopSlug && !user?.barbershopId;
-  const currentPlan = isDemo 
-    ? (urlPlan || previewPlan || demoPlan || 'FREE') 
-    : (shopConfig?.plan || (user as any)?.plan || 'FREE');
+  const currentPlan = (urlPlan || previewPlan)
+    ? (urlPlan || previewPlan!)
+    : (isDemo ? (demoPlan || 'FREE') : (shopConfig?.plan || (user as any)?.plan || 'FREE'));
   const isPro = currentPlan === 'PRO';
 
   // V2 Schedule Management States (matching Admin)
@@ -362,66 +363,59 @@ export default function BarberPortalPage() {
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             {/* Visualizador de Versão / Plano */}
-            {isDemo ? (
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                background: '#f1f5f9',
-                padding: '0.25rem',
-                borderRadius: '8px',
-                border: '1px solid #cbd5e1'
-              }}>
-                <button
-                  type="button"
-                  onClick={() => setPreviewPlan('FREE')}
-                  style={{
-                    background: !isPro ? '#ffffff' : 'transparent',
-                    color: !isPro ? '#0f172a' : '#64748b',
-                    border: 'none',
-                    padding: '0.35rem 0.75rem',
-                    borderRadius: '6px',
-                    fontSize: '0.75rem',
-                    fontWeight: 800,
-                    cursor: 'pointer',
-                    boxShadow: !isPro ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
-                    transition: 'all 0.15s ease'
-                  }}
-                >
-                  VERSÃO GRATUITA
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setPreviewPlan('PRO')}
-                  style={{
-                    background: isPro ? '#d97706' : 'transparent',
-                    color: isPro ? '#ffffff' : '#64748b',
-                    border: 'none',
-                    padding: '0.35rem 0.75rem',
-                    borderRadius: '6px',
-                    fontSize: '0.75rem',
-                    fontWeight: 800,
-                    cursor: 'pointer',
-                    boxShadow: isPro ? '0 1px 4px rgba(217, 119, 6, 0.3)' : 'none',
-                    transition: 'all 0.15s ease'
-                  }}
-                >
-                  VERSÃO PAGA (PRO)
-                </button>
-              </div>
-            ) : (
-              <span style={{
-                background: isPro ? '#fef3c7' : '#f1f5f9',
-                color: isPro ? '#92400e' : '#0f172a',
-                border: isPro ? '1px solid #fde68a' : '1px solid #cbd5e1',
-                padding: '0.35rem 0.75rem',
-                borderRadius: '6px',
-                fontSize: '0.75rem',
-                fontWeight: 800,
-                letterSpacing: '0.04em'
-              }}>
-                PLANO {isPro ? 'PRO' : 'FREE'}
-              </span>
-            )}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              background: '#f1f5f9',
+              padding: '0.25rem',
+              borderRadius: '8px',
+              border: '1px solid #cbd5e1'
+            }}>
+              <button
+                type="button"
+                onClick={() => {
+                  setPreviewPlan('FREE');
+                  setDemoPlan('FREE');
+                  router.push('/barber?plan=FREE');
+                }}
+                style={{
+                  background: !isPro ? '#ffffff' : 'transparent',
+                  color: !isPro ? '#0f172a' : '#64748b',
+                  border: 'none',
+                  padding: '0.35rem 0.75rem',
+                  borderRadius: '6px',
+                  fontSize: '0.75rem',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  boxShadow: !isPro ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                  transition: 'all 0.15s ease'
+                }}
+              >
+                VERSÃO GRATUITA
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setPreviewPlan('PRO');
+                  setDemoPlan('PRO');
+                  router.push('/barber?plan=PRO');
+                }}
+                style={{
+                  background: isPro ? '#d97706' : 'transparent',
+                  color: isPro ? '#ffffff' : '#64748b',
+                  border: 'none',
+                  padding: '0.35rem 0.75rem',
+                  borderRadius: '6px',
+                  fontSize: '0.75rem',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  boxShadow: isPro ? '0 1px 4px rgba(217, 119, 6, 0.3)' : 'none',
+                  transition: 'all 0.15s ease'
+                }}
+              >
+                💎 VERSÃO PAGA (PRO)
+              </button>
+            </div>
 
             <button
               type="button"

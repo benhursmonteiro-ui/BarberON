@@ -42,9 +42,9 @@ export default function ClientPortalPage() {
   const [currentShop, setCurrentShop] = useState<any>(null);
   const [previewPlan, setPreviewPlan] = useState<'PRO' | 'FREE' | null>(null);
   const isDemo = !shopSlug && !user?.barbershopId;
-  const currentPlan = isDemo 
-    ? (urlPlan || previewPlan || demoPlan || 'FREE') 
-    : (currentShop?.plan || (user as any)?.plan || 'FREE');
+  const currentPlan = (urlPlan || previewPlan)
+    ? (urlPlan || previewPlan!)
+    : (isDemo ? (demoPlan || 'FREE') : (currentShop?.plan || (user as any)?.plan || 'FREE'));
   const isPro = currentPlan === 'PRO';
 
   const [activeTab, setActiveTab] = useState<
@@ -465,51 +465,58 @@ export default function ClientPortalPage() {
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             {/* Seletor de Teste de Plano para Demonstração */}
-            {isDemo && (
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                background: '#f1f5f9',
-                padding: '0.2rem',
-                borderRadius: '8px',
-                border: '1px solid #cbd5e1'
-              }}>
-                <button
-                  type="button"
-                  onClick={() => setPreviewPlan('FREE')}
-                  style={{
-                    background: !isPro ? '#ffffff' : 'transparent',
-                    color: !isPro ? '#0f172a' : '#64748b',
-                    border: 'none',
-                    padding: '0.3rem 0.65rem',
-                    borderRadius: '6px',
-                    fontSize: '0.68rem',
-                    fontWeight: 800,
-                    cursor: 'pointer',
-                    boxShadow: !isPro ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'
-                  }}
-                >
-                  FREE
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setPreviewPlan('PRO')}
-                  style={{
-                    background: isPro ? '#d97706' : 'transparent',
-                    color: isPro ? '#ffffff' : '#64748b',
-                    border: 'none',
-                    padding: '0.3rem 0.65rem',
-                    borderRadius: '6px',
-                    fontSize: '0.68rem',
-                    fontWeight: 800,
-                    cursor: 'pointer',
-                    boxShadow: isPro ? '0 1px 4px rgba(217, 119, 6, 0.3)' : 'none'
-                  }}
-                >
-                  PRO
-                </button>
-              </div>
-            )}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              background: '#f1f5f9',
+              padding: '0.2rem',
+              borderRadius: '8px',
+              border: '1px solid #cbd5e1'
+            }}>
+              <button
+                type="button"
+                onClick={() => {
+                  setPreviewPlan('FREE');
+                  setDemoPlan('FREE');
+                  const target = shopSlug ? `/client?plan=FREE` : `/client?plan=FREE`;
+                  window.location.search = '?plan=FREE';
+                }}
+                style={{
+                  background: !isPro ? '#ffffff' : 'transparent',
+                  color: !isPro ? '#0f172a' : '#64748b',
+                  border: 'none',
+                  padding: '0.3rem 0.65rem',
+                  borderRadius: '6px',
+                  fontSize: '0.68rem',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  boxShadow: !isPro ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'
+                }}
+              >
+                FREE
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setPreviewPlan('PRO');
+                  setDemoPlan('PRO');
+                  window.location.search = '?plan=PRO';
+                }}
+                style={{
+                  background: isPro ? '#d97706' : 'transparent',
+                  color: isPro ? '#ffffff' : '#64748b',
+                  border: 'none',
+                  padding: '0.3rem 0.65rem',
+                  borderRadius: '6px',
+                  fontSize: '0.68rem',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  boxShadow: isPro ? '0 1px 4px rgba(217, 119, 6, 0.3)' : 'none'
+                }}
+              >
+                💎 PRO
+              </button>
+            </div>
 
             {/* Badge Aberto Hoje */}
             <div className="header-badge" style={{

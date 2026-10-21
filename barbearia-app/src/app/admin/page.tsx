@@ -1689,11 +1689,11 @@ export default function AdminPortalPage() {
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', alignItems: 'flex-end' }}>
                       <a
-                        href={`https://pay.kiwify.com.br/qjfQUAu?custom_id=${encodeURIComponent((shopConfig as any)?.shopId || shopSlug || 'shop-imperial')}&email=${encodeURIComponent(user?.email || (shopConfig as any)?.ownerEmail || '')}`}
+                        href={`https://mpago.la/2dCR8ZP`}
                         target="_blank"
                         rel="noopener noreferrer"
                         style={{
-                          background: 'linear-gradient(135deg, #10b981, #059669)',
+                          background: 'linear-gradient(135deg, #009ee3, #007ebb)',
                           color: '#ffffff',
                           textDecoration: 'none',
                           padding: '0.75rem 1.4rem',
@@ -1703,10 +1703,10 @@ export default function AdminPortalPage() {
                           display: 'flex',
                           alignItems: 'center',
                           gap: '0.5rem',
-                          boxShadow: '0 4px 15px rgba(16, 185, 129, 0.4)'
+                          boxShadow: '0 4px 15px rgba(0, 158, 227, 0.4)'
                         }}
                       >
-                        <ExternalLink size={16} /> Assinar PRO via Kiwify (R$ 69,90/mês)
+                        <ExternalLink size={16} /> Assinar PRO via Mercado Pago (PIX / Cartão)
                       </a>
 
                       <button

@@ -104,10 +104,9 @@ export default function SaaSPlatformHome() {
       const data = await res.json();
 
       if (res.ok && data.barbershop) {
-        // Se escolheu o Plano PRO, redireciona imediatamente para o checkout da Kiwify
+        // Se escolheu o Plano PRO, redireciona imediatamente para o checkout do Mercado Pago
         if (selectedPlan === 'PRO') {
-          const checkoutUrl = `https://pay.kiwify.com.br/qjfQUAu?custom_id=${encodeURIComponent(data.barbershop.id || data.barbershop.slug)}&email=${encodeURIComponent(adminEmail)}`;
-          window.location.href = checkoutUrl;
+          window.location.href = 'https://mpago.la/2dCR8ZP';
           return;
         }
 

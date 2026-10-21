@@ -560,99 +560,59 @@ const INITIAL_CUSTOMERS: Customer[] = [
   },
 ];
 
+let inMemoryDb: DatabaseSchema | null = null;
+
 export async function ensureDb(): Promise<DatabaseSchema> {
-  await fs.mkdir(DATA_DIR, { recursive: true });
+  if (inMemoryDb) {
+    return inMemoryDb;
+  }
+
+  // Tenta carregar do arquivo (local ou /tmp no servidor)
   try {
     const raw = await fs.readFile(DB_FILE, 'utf-8');
     const parsed = JSON.parse(raw);
-    let modified = false;
-
-    if (!parsed.users || !Array.isArray(parsed.users) || parsed.users.length === 0) {
-      parsed.users = INITIAL_USERS;
-      modified = true;
-    }
-    if (!parsed.shopConfig) {
-      parsed.shopConfig = INITIAL_SHOP_CONFIG;
-      modified = true;
-    }
-    if (!parsed.barbershops || parsed.barbershops.length === 0) {
-      parsed.barbershops = INITIAL_BARBERSHOPS;
-      modified = true;
-    }
-    if (!parsed.barbers || parsed.barbers.length === 0) {
-      parsed.barbers = INITIAL_BARBERS;
-      modified = true;
-    }
-    if (!parsed.services || parsed.services.length === 0) {
-      parsed.services = INITIAL_SERVICES;
-      modified = true;
-    }
-    if (!parsed.customers || parsed.customers.length === 0) {
-      parsed.customers = INITIAL_CUSTOMERS;
-      modified = true;
-    }
-    if (!parsed.appointments || parsed.appointments.length === 0) {
-      parsed.appointments = getInitialAppointments();
-      modified = true;
-    }
-    if (!parsed.products || parsed.products.length === 0) {
-      parsed.products = INITIAL_PRODUCTS;
-      modified = true;
-    }
-    if (!parsed.orders) {
-      parsed.orders = [];
-      modified = true;
-    }
-    if (!parsed.expenses || parsed.expenses.length === 0) {
-      parsed.expenses = INITIAL_EXPENSES;
-      modified = true;
-    }
-    if (!parsed.incomes || parsed.incomes.length === 0) {
-      parsed.incomes = INITIAL_INCOMES;
-      modified = true;
-    }
-    if (!parsed.promotions || parsed.promotions.length === 0) {
-      parsed.promotions = INITIAL_PROMOTIONS;
-      modified = true;
-    }
-    if (!parsed.notifications || parsed.notifications.length === 0) {
-      parsed.notifications = INITIAL_NOTIFICATIONS;
-      modified = true;
-    }
-    if (!parsed.reviews || parsed.reviews.length === 0) {
-      parsed.reviews = INITIAL_REVIEWS;
-      modified = true;
-    }
-
-    if (modified) {
-      await saveDb(parsed);
-    }
-    return parsed as DatabaseSchema;
+    inMemoryDb = parsed as DatabaseSchema;
+    return inMemoryDb;
   } catch {
     const initialData: DatabaseSchema = {
       users: INITIAL_USERS,
       barbershops: INITIAL_BARBERSHOPS,
       barbers: INITIAL_BARBERS,
       services: INITIAL_SERVICES,
-      customers: INITIAL_CUSTOMERS,
-      appointments: getInitialAppointments(),
+      customers: [], // Zerado para produção
+      appointments: [], // Zerado para produção
       products: INITIAL_PRODUCTS,
       orders: [],
-      expenses: INITIAL_EXPENSES,
-      incomes: INITIAL_INCOMES,
+      expenses: [], // Zerado para produção
+      incomes: [], // Zerado para produção
       promotions: INITIAL_PROMOTIONS,
-      notifications: INITIAL_NOTIFICATIONS,
-      reviews: INITIAL_REVIEWS,
+      notifications: [],
+      reviews: [],
       shopConfig: INITIAL_SHOP_CONFIG,
     };
-    await fs.writeFile(DB_FILE, JSON.stringify(initialData, null, 2), 'utf-8');
-    return initialData;
+    inMemoryDb = initialData;
+
+    try {
+      await fs.mkdir(DATA_DIR, { recursive: true });
+      await fs.writeFile(DB_FILE, JSON.stringify(initialData, null, 2), 'utf-8');
+    } catch (writeErr) {
+      // Em ambientes Serverless Read-Only como Vercel, o erro é ignorado com segurança mantendo na memória
+      console.warn('Ambiente Read-Only detectado, operando com cache seguro em memória.');
+    }
+
+    return inMemoryDb;
   }
 }
 
 export async function saveDb(data: DatabaseSchema): Promise<void> {
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  await fs.writeFile(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
+  inMemoryDb = data;
+  try {
+    await fs.mkdir(DATA_DIR, { recursive: true });
+    await fs.writeFile(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
+  } catch (err) {
+    // Vercel serverless functions usam /tmp ou in-memory
+    console.warn('Aviso: Sistema de arquivos read-only na Vercel. Dados mantidos em memória de execução.');
+  }
 }
 
 // -------------------------------------------------------------

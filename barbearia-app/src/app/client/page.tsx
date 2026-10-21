@@ -24,10 +24,19 @@ import {
   LogIn
 } from 'lucide-react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import BookingFlow from '@/components/BookingFlow';
 
 export default function ClientPortalPage() {
   const { user, shopSlug, updateUserProfile, demoPlan, setDemoPlan } = useAuth();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const planParam = searchParams.get('plan');
+    if (planParam === 'PRO' || planParam === 'FREE') {
+      setDemoPlan(planParam);
+    }
+  }, [searchParams, setDemoPlan]);
 
   const [currentShop, setCurrentShop] = useState<any>(null);
   const [previewPlan, setPreviewPlan] = useState<'PRO' | 'FREE' | null>(null);

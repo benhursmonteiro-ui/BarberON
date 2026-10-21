@@ -26,9 +26,18 @@ import {
   ShieldAlert
 } from 'lucide-react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 
 export default function BarberPortalPage() {
   const { user, role, shopSlug, demoPlan, setDemoPlan } = useAuth();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const planParam = searchParams.get('plan');
+    if (planParam === 'PRO' || planParam === 'FREE') {
+      setDemoPlan(planParam);
+    }
+  }, [searchParams, setDemoPlan]);
 
   const [activeTab, setActiveTab] = useState<
     'dashboard' | 'schedule' | 'commissions' | 'history' | 'availability' | 'reviews' | 'profile'

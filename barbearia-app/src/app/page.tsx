@@ -262,48 +262,144 @@ export default function SaaSPlatformHome() {
             Navegue pelos módulos de exemplo abaixo e alterne entre a <strong>Versão Gratuita</strong> e a <strong>Versão Paga (PRO)</strong> para ver como cada tela funciona na prática:
           </p>
 
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
-            <Link
-              href="/admin"
-              className="btn-primary"
-              style={{ padding: '0.85rem 1.35rem', fontSize: '0.9rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}
-            >
-              <ShieldCheck size={18} /> Ver Demo Admin (/admin)
-            </Link>
-            <Link
-              href="/barber"
-              style={{
-                padding: '0.85rem 1.35rem',
-                fontSize: '0.9rem',
-                textDecoration: 'none',
-                background: '#8b5cf6',
-                color: '#ffffff',
-                borderRadius: '8px',
-                fontWeight: 700,
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.4rem'
-              }}
-            >
-              <Scissors size={18} /> Ver Demo Barbeiro (/barber)
-            </Link>
-            <Link
-              href="/client"
-              style={{
-                padding: '0.85rem 1.35rem',
-                fontSize: '0.9rem',
-                textDecoration: 'none',
-                background: '#10b981',
-                color: '#ffffff',
-                borderRadius: '8px',
-                fontWeight: 700,
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.4rem'
-              }}
-            >
-              <Users size={18} /> Ver Demo Cliente (/client)
-            </Link>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1rem', marginTop: '1rem' }}>
+            {/* Box Admin */}
+            <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1rem', textAlign: 'center' }}>
+              <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#1e293b', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem' }}>
+                <ShieldCheck size={18} color="#3b82f6" /> Telas do Administrador (Dono)
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <Link
+                  href="/admin?plan=PRO"
+                  style={{
+                    padding: '0.65rem 1rem',
+                    fontSize: '0.85rem',
+                    textDecoration: 'none',
+                    background: 'linear-gradient(135deg, #d97706, #b45309)',
+                    color: '#ffffff',
+                    borderRadius: '8px',
+                    fontWeight: 800,
+                    boxShadow: '0 2px 8px rgba(217, 119, 6, 0.25)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '0.4rem'
+                  }}
+                >
+                  💎 Ver Versão Paga (PRO)
+                </Link>
+                <Link
+                  href="/admin?plan=FREE"
+                  style={{
+                    padding: '0.55rem 1rem',
+                    fontSize: '0.82rem',
+                    textDecoration: 'none',
+                    background: '#ffffff',
+                    color: '#475569',
+                    border: '1px solid #cbd5e1',
+                    borderRadius: '8px',
+                    fontWeight: 700,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  Ver Versão Gratuita
+                </Link>
+              </div>
+            </div>
+
+            {/* Box Barbeiro */}
+            <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1rem', textAlign: 'center' }}>
+              <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#1e293b', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem' }}>
+                <Scissors size={18} color="#8b5cf6" /> Telas do Barbeiro
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <Link
+                  href="/barber?plan=PRO"
+                  style={{
+                    padding: '0.65rem 1rem',
+                    fontSize: '0.85rem',
+                    textDecoration: 'none',
+                    background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+                    color: '#ffffff',
+                    borderRadius: '8px',
+                    fontWeight: 800,
+                    boxShadow: '0 2px 8px rgba(139, 92, 246, 0.25)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '0.4rem'
+                  }}
+                >
+                  💎 Ver Versão Paga (PRO)
+                </Link>
+                <Link
+                  href="/barber?plan=FREE"
+                  style={{
+                    padding: '0.55rem 1rem',
+                    fontSize: '0.82rem',
+                    textDecoration: 'none',
+                    background: '#ffffff',
+                    color: '#475569',
+                    border: '1px solid #cbd5e1',
+                    borderRadius: '8px',
+                    fontWeight: 700,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  Ver Versão Gratuita
+                </Link>
+              </div>
+            </div>
+
+            {/* Box Cliente */}
+            <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1rem', textAlign: 'center' }}>
+              <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#1e293b', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem' }}>
+                <Users size={18} color="#10b981" /> Telas do Cliente Final
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <Link
+                  href="/client?plan=PRO"
+                  style={{
+                    padding: '0.65rem 1rem',
+                    fontSize: '0.85rem',
+                    textDecoration: 'none',
+                    background: 'linear-gradient(135deg, #10b981, #059669)',
+                    color: '#ffffff',
+                    borderRadius: '8px',
+                    fontWeight: 800,
+                    boxShadow: '0 2px 8px rgba(16, 185, 129, 0.25)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '0.4rem'
+                  }}
+                >
+                  💎 Ver Versão Paga (PRO)
+                </Link>
+                <Link
+                  href="/client?plan=FREE"
+                  style={{
+                    padding: '0.55rem 1rem',
+                    fontSize: '0.82rem',
+                    textDecoration: 'none',
+                    background: '#ffffff',
+                    color: '#475569',
+                    border: '1px solid #cbd5e1',
+                    borderRadius: '8px',
+                    fontWeight: 700,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  Ver Versão Gratuita
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </section>

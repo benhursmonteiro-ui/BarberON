@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { 
   LayoutDashboard, 
   Calendar, 
@@ -47,6 +47,14 @@ import Link from 'next/link';
 export default function AdminPortalPage() {
   const { user, role, loading: authLoading, shopSlug, demoPlan, setDemoPlan } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const planParam = searchParams.get('plan');
+    if (planParam === 'PRO' || planParam === 'FREE') {
+      setDemoPlan(planParam);
+    }
+  }, [searchParams, setDemoPlan]);
 
   // Navigation Tabs for all 12 modules
   const [activeTab, setActiveTab] = useState<

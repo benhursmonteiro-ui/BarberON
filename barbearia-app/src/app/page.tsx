@@ -304,13 +304,6 @@ export default function SaaSPlatformHome() {
             >
               <Users size={18} /> Ver Demo Cliente (/client)
             </Link>
-            <Link
-              href="/login"
-              className="btn-secondary"
-              style={{ padding: '0.85rem 1.35rem', fontSize: '0.9rem', textDecoration: 'none' }}
-            >
-              Entrar / Login →
-            </Link>
           </div>
         </div>
       </section>

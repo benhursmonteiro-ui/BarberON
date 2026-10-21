@@ -30,18 +30,21 @@ import BookingFlow from '@/components/BookingFlow';
 export default function ClientPortalPage() {
   const { user, shopSlug, updateUserProfile, demoPlan, setDemoPlan } = useAuth();
   const searchParams = useSearchParams();
+  const urlPlan = searchParams.get('plan') as 'PRO' | 'FREE' | null;
 
   useEffect(() => {
-    const planParam = searchParams.get('plan');
-    if (planParam === 'PRO' || planParam === 'FREE') {
-      setDemoPlan(planParam);
+    if (urlPlan === 'PRO' || urlPlan === 'FREE') {
+      setPreviewPlan(urlPlan);
+      setDemoPlan(urlPlan);
     }
-  }, [searchParams, setDemoPlan]);
+  }, [urlPlan, setDemoPlan]);
 
   const [currentShop, setCurrentShop] = useState<any>(null);
   const [previewPlan, setPreviewPlan] = useState<'PRO' | 'FREE' | null>(null);
   const isDemo = !shopSlug && !user?.barbershopId;
-  const currentPlan = isDemo ? (previewPlan || demoPlan) : (currentShop?.plan || (user as any)?.plan || 'FREE');
+  const currentPlan = isDemo 
+    ? (urlPlan || previewPlan || demoPlan || 'FREE') 
+    : (currentShop?.plan || (user as any)?.plan || 'FREE');
   const isPro = currentPlan === 'PRO';
 
   const [activeTab, setActiveTab] = useState<

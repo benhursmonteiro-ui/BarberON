@@ -103,9 +103,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem(SHOP_KEY, activeSlug);
     }
 
-    if (u.role === 'admin') router.push('/admin');
-    else if (u.role === 'barber') router.push('/barber');
-    else router.push('/client');
+    const targetRoute = u.role === 'admin' ? '/admin' : u.role === 'barber' ? '/barber' : '/client';
+    // Se a rota atual já for a rota correta do perfil, não força o replace limpando query params (?plan=PRO)
+    if (typeof window !== 'undefined' && window.location.pathname === targetRoute) {
+      return;
+    }
+
+    router.push(targetRoute);
   };
 
   const login = async (email: string, password: string, slug?: string): Promise<{ success: boolean; error?: string }> => {

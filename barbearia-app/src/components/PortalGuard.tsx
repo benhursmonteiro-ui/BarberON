@@ -118,7 +118,11 @@ export default function PortalGuard({
           }}>
             <button
               type="button"
-              onClick={() => setDemoPlan('FREE')}
+              onClick={() => {
+                setDemoPlan('FREE');
+                const path = role === 'admin' ? '/admin' : role === 'barber' ? '/barber' : '/client';
+                router.push(`${path}?plan=FREE`);
+              }}
               style={{
                 padding: '0.25rem 0.65rem',
                 fontSize: '0.72rem',
@@ -135,7 +139,11 @@ export default function PortalGuard({
             </button>
             <button
               type="button"
-              onClick={() => setDemoPlan('PRO')}
+              onClick={() => {
+                setDemoPlan('PRO');
+                const path = role === 'admin' ? '/admin' : role === 'barber' ? '/barber' : '/client';
+                router.push(`${path}?plan=PRO`);
+              }}
               style={{
                 padding: '0.25rem 0.65rem',
                 fontSize: '0.72rem',
@@ -160,7 +168,11 @@ export default function PortalGuard({
           
           <button
             type="button"
-            onClick={() => switchRole('admin')}
+            onClick={() => {
+              if (role !== 'admin') {
+                router.push(`/admin?plan=${demoPlan}`);
+              }
+            }}
             style={{
               background: role === 'admin' ? '#3b82f6' : '#1e293b',
               color: '#ffffff',
@@ -178,7 +190,11 @@ export default function PortalGuard({
 
           <button
             type="button"
-            onClick={() => switchRole('barber')}
+            onClick={() => {
+              if (role !== 'barber') {
+                router.push(`/barber?plan=${demoPlan}`);
+              }
+            }}
             style={{
               background: role === 'barber' ? '#8b5cf6' : '#1e293b',
               color: '#ffffff',
@@ -196,7 +212,11 @@ export default function PortalGuard({
 
           <button
             type="button"
-            onClick={() => switchRole('client')}
+            onClick={() => {
+              if (role !== 'client') {
+                router.push(`/client?plan=${demoPlan}`);
+              }
+            }}
             style={{
               background: role === 'client' ? '#10b981' : '#1e293b',
               color: '#ffffff',

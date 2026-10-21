@@ -48,13 +48,14 @@ export default function AdminPortalPage() {
   const { user, role, loading: authLoading, shopSlug, demoPlan, setDemoPlan } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const urlPlan = searchParams.get('plan') as 'PRO' | 'FREE' | null;
 
   useEffect(() => {
-    const planParam = searchParams.get('plan');
-    if (planParam === 'PRO' || planParam === 'FREE') {
-      setDemoPlan(planParam);
+    if (urlPlan === 'PRO' || urlPlan === 'FREE') {
+      setPreviewPlan(urlPlan);
+      setDemoPlan(urlPlan);
     }
-  }, [searchParams, setDemoPlan]);
+  }, [urlPlan, setDemoPlan]);
 
   // Navigation Tabs for all 12 modules
   const [activeTab, setActiveTab] = useState<
@@ -166,7 +167,9 @@ export default function AdminPortalPage() {
 
   // Se o usuário estiver autenticado em uma barbearia cadastrada (ex: Monteiro), ele não está em modo demo
   const isDemo = !shopSlug && !user?.barbershopId;
-  const currentPlan = isDemo ? (previewPlan || demoPlan) : (shopConfig?.plan || (user as any)?.plan || 'FREE');
+  const currentPlan = isDemo 
+    ? (urlPlan || previewPlan || demoPlan || 'FREE') 
+    : (shopConfig?.plan || (user as any)?.plan || 'FREE');
   
   // Validação de pagamento e expiração
   const subscriptionStatus = (shopConfig as any)?.subscriptionStatus || 'active';

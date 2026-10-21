@@ -31,13 +31,14 @@ import { useSearchParams } from 'next/navigation';
 export default function BarberPortalPage() {
   const { user, role, shopSlug, demoPlan, setDemoPlan } = useAuth();
   const searchParams = useSearchParams();
+  const urlPlan = searchParams.get('plan') as 'PRO' | 'FREE' | null;
 
   useEffect(() => {
-    const planParam = searchParams.get('plan');
-    if (planParam === 'PRO' || planParam === 'FREE') {
-      setDemoPlan(planParam);
+    if (urlPlan === 'PRO' || urlPlan === 'FREE') {
+      setPreviewPlan(urlPlan);
+      setDemoPlan(urlPlan);
     }
-  }, [searchParams, setDemoPlan]);
+  }, [urlPlan, setDemoPlan]);
 
   const [activeTab, setActiveTab] = useState<
     'dashboard' | 'schedule' | 'commissions' | 'history' | 'availability' | 'reviews' | 'profile'
@@ -54,7 +55,9 @@ export default function BarberPortalPage() {
   const [shopConfig, setShopConfig] = useState<any>(null);
   const [previewPlan, setPreviewPlan] = useState<'PRO' | 'FREE' | null>(null);
   const isDemo = !shopSlug && !user?.barbershopId;
-  const currentPlan = isDemo ? (previewPlan || demoPlan) : (shopConfig?.plan || (user as any)?.plan || 'FREE');
+  const currentPlan = isDemo 
+    ? (urlPlan || previewPlan || demoPlan || 'FREE') 
+    : (shopConfig?.plan || (user as any)?.plan || 'FREE');
   const isPro = currentPlan === 'PRO';
 
   // V2 Schedule Management States (matching Admin)

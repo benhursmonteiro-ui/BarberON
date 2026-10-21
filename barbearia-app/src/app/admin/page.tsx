@@ -1758,7 +1758,7 @@ export default function AdminPortalPage() {
                       <div>
                         <div style={{ fontWeight: 800, fontSize: '0.95rem' }}>Assinatura do Plano PRO Vencida / Pendente</div>
                         <div style={{ fontSize: '0.8rem', color: '#b91c1c' }}>
-                          O acesso aos recursos PRO e a criação de novos agendamentos estão temporariamente bloqueados. Regularize o pagamento na Kiwify para restabelecimento imediato.
+                          O acesso aos recursos PRO e a criação de novos agendamentos estão temporariamente bloqueados. Regularize o pagamento via Mercado Pago para restabelecimento imediato.
                         </div>
                       </div>
                     </div>

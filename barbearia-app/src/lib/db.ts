@@ -1065,7 +1065,7 @@ export async function createAppointment(data: {
       const expiresAt = new Date(targetShop.subscriptionExpiresAt);
       if (new Date() > expiresAt) {
         return {
-          error: 'A barbearia está com a assinatura do sistema expirada. Regularize na Kiwify para reativar.',
+          error: 'A barbearia está com a assinatura do sistema expirada. Regularize via Mercado Pago para reativar.',
         };
       }
     }

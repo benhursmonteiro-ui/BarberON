@@ -44,6 +44,7 @@ model Barbershop {
   customers    Customer[]
   appointments Appointment[]
   transactions FinancialTransaction[]
+  waitingQueueEntries WaitingQueueEntry[]
 }
 
 model Barber {
@@ -63,6 +64,7 @@ model Barber {
   schedules      BarberSchedule[]
   appointments   Appointment[]
   transactions   FinancialTransaction[]
+  waitingQueueEntries WaitingQueueEntry[]
 
   @@index([barbershopId])
 }
@@ -96,6 +98,7 @@ model Service {
 
   barbershop      Barbershop   @relation(fields: [barbershopId], references: [id], onDelete: Cascade)
   appointments    Appointment[]
+  waitingQueueEntries WaitingQueueEntry[]
 
   @@index([barbershopId])
 }
@@ -181,4 +184,28 @@ model ReminderNotification {
   customer      Customer    @relation(fields: [customerId], references: [id], onDelete: Cascade)
 
   @@index([status, scheduledFor])
+}
+
+model WaitingQueueEntry {
+  id              String             @id @default(uuid())
+  barbershopId    String             @map("barbershop_id")
+  name            String
+  phone           String
+  barberId        String             @map("barber_id")
+  barberName      String             @map("barber_name")
+  serviceId       String             @map("service_id")
+  serviceName     String             @map("service_name")
+  durationMinutes Int                @map("duration_minutes")
+  notes           String?
+  status          String             @default("aguardando")
+  createdAt       DateTime           @default(now()) @map("created_at")
+  startedAt       DateTime?          @map("started_at")
+  completedAt     DateTime?          @map("completed_at")
+
+  barbershop Barbershop @relation(fields: [barbershopId], references: [id], onDelete: Cascade)
+  barber     Barber     @relation(fields: [barberId], references: [id], onDelete: Restrict)
+  service    Service    @relation(fields: [serviceId], references: [id], onDelete: Restrict)
+
+  @@index([barbershopId, barberId, status, createdAt])
+  @@map("waiting_queue_entries")
 }

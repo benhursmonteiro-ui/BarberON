@@ -76,6 +76,12 @@ export interface Appointment {
   barberName: string;
   serviceId: string;
   serviceName: string;
+  services?: Array<{
+    id: string;
+    name: string;
+    price: number;
+    durationMinutes: number;
+  }>;
   price: number;
   commission: number; // Valor em R$ gerado para o barbeiro: (price * commissionRate) / 100
   date: string; // YYYY-MM-DD
@@ -96,6 +102,25 @@ export interface Appointment {
   customerPhone?: string;
   totalAmount?: number;
   barberCommission?: number;
+}
+
+export type WaitingQueueStatus = 'aguardando' | 'em_atendimento' | 'concluido' | 'cancelado';
+
+export interface WaitingQueueEntry {
+  id: string;
+  barbershopId: string;
+  name: string;
+  phone: string;
+  barberId: string;
+  barberName: string;
+  serviceId: string;
+  serviceName: string;
+  durationMinutes: number;
+  notes?: string;
+  status: WaitingQueueStatus;
+  createdAt: string;
+  startedAt?: string;
+  completedAt?: string;
 }
 
 export interface Product {

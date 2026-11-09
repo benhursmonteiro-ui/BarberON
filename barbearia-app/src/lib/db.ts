@@ -15,7 +15,9 @@ import {
   Service, 
   ShopConfig, 
   User, 
-  UserRole 
+  UserRole,
+  WaitingQueueEntry,
+  WaitingQueueStatus,
 } from './types';
 import { supabase } from './supabase';
 
@@ -36,6 +38,7 @@ export interface DatabaseSchema {
   promotions: Promotion[];
   notifications: Notification[];
   reviews: Review[];
+  waitingQueue: WaitingQueueEntry[];
   shopConfig: ShopConfig;
   // Legado para compatibilidade
   transactions?: any[];
@@ -572,6 +575,7 @@ export async function ensureDb(): Promise<DatabaseSchema> {
   try {
     const raw = await fs.readFile(DB_FILE, 'utf-8');
     const parsed = JSON.parse(raw);
+    parsed.waitingQueue ??= [];
     inMemoryDb = parsed as DatabaseSchema;
     return inMemoryDb;
   } catch {
@@ -589,6 +593,7 @@ export async function ensureDb(): Promise<DatabaseSchema> {
       promotions: INITIAL_PROMOTIONS,
       notifications: [],
       reviews: [],
+      waitingQueue: [],
       shopConfig: INITIAL_SHOP_CONFIG,
     };
     inMemoryDb = initialData;
@@ -1036,6 +1041,7 @@ export async function createAppointment(data: {
   clientEmail?: string;
   barberId: string;
   serviceId: string;
+  serviceIds?: string[];
   date: string;
   time: string;
   paymentMethod?: Appointment['paymentMethod'];
@@ -1094,20 +1100,33 @@ export async function createAppointment(data: {
     return { error: 'O cliente está com restrição de agendamento. Por favor, fale com a recepção da barbearia.' };
   }
 
-  const service = db.services.find((s) => s.id === data.serviceId);
+  const requestedServiceIds = data.serviceIds?.length ? data.serviceIds : [data.serviceId];
+  const services = requestedServiceIds.map((id) => db.services.find(
+    (serviceItem) => serviceItem.id === id &&
+      serviceItem.active !== false &&
+      (!serviceItem.barbershopId || serviceItem.barbershopId === targetShop?.id || serviceItem.barbershopId === targetShop?.slug)
+  ));
+  if (services.some((serviceItem) => !serviceItem)) return { error: 'Um ou mais serviços não estão disponíveis.' };
+  const selectedServices = services as Service[];
+  const service = selectedServices[0];
   if (!service) return { error: 'Serviço não encontrado.' };
 
   const barber = db.barbers.find((b) => b.id === data.barberId);
   if (!barber) return { error: 'Barbeiro não encontrado.' };
+  const totalDuration = selectedServices.reduce(
+    (total, serviceItem) => total + (serviceItem.duration || serviceItem.durationMinutes || 30),
+    0
+  );
+  const totalPrice = selectedServices.reduce((total, serviceItem) => total + serviceItem.price, 0);
 
   // Checa disponibilidade
-  const availableSlots = await getAvailableSlots(barber.id, data.date, service.duration || 30);
+  const availableSlots = await getAvailableSlots(barber.id, data.date, totalDuration);
   if (!availableSlots.includes(data.time)) {
     return { error: 'O horário selecionado não está mais disponível para este barbeiro ou colide com outro atendimento.' };
   }
 
   const commissionRate = barber.commission || 50;
-  const commissionValue = Number(((service.price * commissionRate) / 100).toFixed(2));
+  const commissionValue = Number(((totalPrice * commissionRate) / 100).toFixed(2));
   const isFiado = data.paymentMethod === 'fiado';
 
   const newApt: Appointment = {
@@ -1120,12 +1139,18 @@ export async function createAppointment(data: {
     barberId: barber.id,
     barberName: barber.name,
     serviceId: service.id,
-    serviceName: service.name,
-    price: service.price,
+    serviceName: selectedServices.map((serviceItem) => serviceItem.name).join(' + '),
+    services: selectedServices.map((serviceItem) => ({
+      id: serviceItem.id,
+      name: serviceItem.name,
+      price: serviceItem.price,
+      durationMinutes: serviceItem.duration || serviceItem.durationMinutes || 30,
+    })),
+    price: totalPrice,
     commission: commissionValue,
     date: data.date,
     time: data.time,
-    durationMinutes: service.duration || 30,
+    durationMinutes: totalDuration,
     notes: data.notes?.trim(),
     status: 'agendado',
     paymentStatus: isFiado ? 'fiado' : 'pendente',
@@ -1168,7 +1193,7 @@ export async function createAppointment(data: {
     id: `notif-${Date.now()}-client`,
     userId: data.clientId,
     title: 'Novo Agendamento Confirmado! ✂️',
-    message: `Seu agendamento de ${service.name} com ${barber.name} está marcado para ${data.date} às ${data.time}.`,
+    message: `Seu agendamento de ${newApt.serviceName} com ${barber.name} está marcado para ${data.date} às ${data.time}.`,
     type: 'appointment',
     read: false,
     referenceId: newApt.id,
@@ -1180,7 +1205,7 @@ export async function createAppointment(data: {
       id: `notif-${Date.now()}-barber`,
       userId: barber.userId,
       title: 'Novo Corte na sua Agenda! 💈',
-      message: `${data.clientName} agendou ${service.name} para ${data.date} às ${data.time}.`,
+      message: `${data.clientName} agendou ${newApt.serviceName} para ${data.date} às ${data.time}.`,
       type: 'appointment',
       read: false,
       referenceId: newApt.id,
@@ -2089,6 +2114,137 @@ export async function getDashboardStats(shopIdOrSlug?: string) {
   };
 }
 
+export async function getWaitingQueue(shopIdOrSlug?: string) {
+  const db = await ensureDb();
+  const shop = db.barbershops.find(
+    (item) => item.id === shopIdOrSlug || item.slug.toLowerCase() === shopIdOrSlug?.toLowerCase()
+  ) || (shopIdOrSlug ? undefined : db.barbershops[0]);
+
+  if (!shop) return [];
+
+  const entries = (db.waitingQueue || [])
+    .filter((entry) => entry.barbershopId === shop.id && (entry.status === 'aguardando' || entry.status === 'em_atendimento'))
+    .sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+
+  const result: Array<WaitingQueueEntry & { position: number; estimatedWaitMinutes: number }> = [];
+  const byBarber = new Map<string, WaitingQueueEntry[]>();
+
+  for (const entry of entries) {
+    const lane = byBarber.get(entry.barberId) || [];
+    lane.push(entry);
+    byBarber.set(entry.barberId, lane);
+  }
+
+  for (const lane of byBarber.values()) {
+    const inService = lane.find((entry) => entry.status === 'em_atendimento');
+    let remainingMinutes = 0;
+    if (inService) {
+      const elapsedMinutes = inService.startedAt
+        ? Math.floor((Date.now() - new Date(inService.startedAt).getTime()) / 60_000)
+        : 0;
+      remainingMinutes = Math.max(0, inService.durationMinutes - elapsedMinutes);
+      result.push({ ...inService, position: 0, estimatedWaitMinutes: 0 });
+    }
+
+    let position = 0;
+    for (const entry of lane) {
+      if (entry.status !== 'aguardando') continue;
+      position += 1;
+      result.push({
+        ...entry,
+        position,
+        estimatedWaitMinutes: remainingMinutes,
+      });
+      remainingMinutes += entry.durationMinutes;
+    }
+  }
+
+  return result.sort((a, b) => {
+    if (a.status !== b.status) return a.status === 'em_atendimento' ? -1 : 1;
+    return a.createdAt.localeCompare(b.createdAt);
+  });
+}
+
+export async function createWaitingQueueEntry(data: {
+  shopIdOrSlug?: string;
+  name: string;
+  phone: string;
+  barberId: string;
+  serviceId: string;
+  notes?: string;
+}): Promise<{ entry?: WaitingQueueEntry; error?: string }> {
+  const db = await ensureDb();
+  const shop = db.barbershops.find(
+    (item) => item.id === data.shopIdOrSlug || item.slug.toLowerCase() === data.shopIdOrSlug?.toLowerCase()
+  ) || (data.shopIdOrSlug ? undefined : db.barbershops[0]);
+
+  if (!shop) return { error: 'Barbearia não encontrada.' };
+  const barber = db.barbers.find((item) => item.id === data.barberId && item.barbershopId === shop.id && item.active);
+  const service = db.services.find((item) => item.id === data.serviceId && item.active && (!item.barbershopId || item.barbershopId === shop.id));
+  if (!barber || !service) return { error: 'Selecione um barbeiro e um serviço válidos para esta barbearia.' };
+
+  const phone = data.phone.replace(/\D/g, '');
+  if (phone.length < 8) return { error: 'Informe um telefone válido para o cliente.' };
+
+  const entry: WaitingQueueEntry = {
+    id: `queue-${crypto.randomUUID()}`,
+    barbershopId: shop.id,
+    name: data.name.trim(),
+    phone,
+    barberId: barber.id,
+    barberName: barber.name,
+    serviceId: service.id,
+    serviceName: service.name,
+    durationMinutes: service.durationMinutes || service.duration || 30,
+    notes: data.notes?.trim() || undefined,
+    status: 'aguardando',
+    createdAt: new Date().toISOString(),
+  };
+
+  db.waitingQueue = db.waitingQueue || [];
+  db.waitingQueue.push(entry);
+  await saveDb(db);
+  return { entry };
+}
+
+export async function updateWaitingQueueStatus(
+  id: string,
+  status: WaitingQueueStatus,
+  shopIdOrSlug?: string
+): Promise<{ entry?: WaitingQueueEntry; error?: string }> {
+  const db = await ensureDb();
+  const shop = db.barbershops.find(
+    (item) => item.id === shopIdOrSlug || item.slug.toLowerCase() === shopIdOrSlug?.toLowerCase()
+  ) || (shopIdOrSlug ? undefined : db.barbershops[0]);
+  if (!shop) return { error: 'Barbearia não encontrada.' };
+
+  const entry = db.waitingQueue?.find((item) => item.id === id && item.barbershopId === shop.id);
+  if (!entry) return { error: 'Cliente não encontrado na fila.' };
+  if (entry.status === 'concluido' || entry.status === 'cancelado') {
+    return { error: 'Este atendimento já foi encerrado.' };
+  }
+  if (status === 'aguardando' || (status === 'concluido' && entry.status !== 'em_atendimento')) {
+    return { error: 'A mudança de status solicitada não é permitida.' };
+  }
+  if (status === 'em_atendimento') {
+    if (entry.status !== 'aguardando') {
+      return { error: 'Este cliente não está aguardando para iniciar o atendimento.' };
+    }
+    const barberIsBusy = db.waitingQueue.some(
+      (item) => item.barbershopId === shop.id && item.barberId === entry.barberId &&
+        item.status === 'em_atendimento' && item.id !== entry.id
+    );
+    if (barberIsBusy) return { error: 'Este barbeiro já está atendendo outro cliente.' };
+    entry.startedAt = new Date().toISOString();
+  }
+  if (status === 'concluido' || status === 'cancelado') {
+    entry.completedAt = new Date().toISOString();
+  }
+  entry.status = status;
+  await saveDb(db);
+  return { entry };
+}
+
 export async function getUpcomingReminders(_shopIdOrSlug?: string) {
   const db = await ensureDb();
   const today = new Date().toISOString().split('T')[0];
@@ -2172,5 +2328,3 @@ export async function updateBarbershopSubscription(data: {
   await saveDb(db);
   return shop;
 }
-
-

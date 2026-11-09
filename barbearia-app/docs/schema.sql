@@ -145,3 +145,25 @@ CREATE TABLE reminder_notifications (
 );
 
 CREATE INDEX idx_reminders_status_sched ON reminder_notifications(status, scheduled_for);
+
+-- 10. Fila de espera presencial
+CREATE TABLE waiting_queue_entries (
+    id VARCHAR(36) PRIMARY KEY,
+    barbershop_id VARCHAR(36) NOT NULL REFERENCES barbershops(id) ON DELETE CASCADE,
+    name VARCHAR(150) NOT NULL,
+    phone VARCHAR(20) NOT NULL,
+    barber_id VARCHAR(36) NOT NULL REFERENCES barbers(id) ON DELETE RESTRICT,
+    barber_name VARCHAR(120) NOT NULL,
+    service_id VARCHAR(36) NOT NULL REFERENCES services(id) ON DELETE RESTRICT,
+    service_name VARCHAR(120) NOT NULL,
+    duration_minutes INTEGER NOT NULL,
+    notes TEXT,
+    status VARCHAR(20) NOT NULL DEFAULT 'aguardando',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    started_at TIMESTAMP WITH TIME ZONE,
+    completed_at TIMESTAMP WITH TIME ZONE,
+    CONSTRAINT chk_waiting_queue_status CHECK (status IN ('aguardando', 'em_atendimento', 'concluido', 'cancelado'))
+);
+
+CREATE INDEX idx_waiting_queue_barber_status_arrival
+    ON waiting_queue_entries(barbershop_id, barber_id, status, created_at);

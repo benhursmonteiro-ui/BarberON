@@ -6,8 +6,10 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const clientId = searchParams.get('clientId');
     const phone = searchParams.get('phone');
+    const slug = searchParams.get('slug') || undefined;
+    const barbershopId = searchParams.get('barbershopId') || searchParams.get('shopId') || undefined;
 
-    let appointments = await getAppointments();
+    let appointments = await getAppointments({ slug, barbershopId });
 
     if (clientId) {
       appointments = appointments.filter((a) => a.clientId === clientId);

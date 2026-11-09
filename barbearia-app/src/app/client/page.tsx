@@ -26,8 +26,41 @@ import {
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import BookingFlow from '@/components/BookingFlow';
+import ClientProArea from '@/components/ClientProArea';
 
 export default function ClientPortalPage() {
+  const { user, shopSlug, demoPlan } = useAuth();
+  const searchParams = useSearchParams();
+  const urlPlan = searchParams.get('plan');
+  const [shopPlan, setShopPlan] = useState<'FREE' | 'PRO' | null>(null);
+  const isDemo = !shopSlug && !user?.barbershopId;
+  const targetShop = shopSlug || user?.barbershopId || 'imperial';
+
+  useEffect(() => {
+    if (isDemo) return;
+    let active = true;
+    fetch(`/api/barbershops/${encodeURIComponent(targetShop)}`)
+      .then(async (response) => {
+        if (!response.ok) throw new Error('Não foi possível consultar o plano da barbearia.');
+        return response.json();
+      })
+      .then((shop) => {
+        if (active && (shop.plan === 'FREE' || shop.plan === 'PRO')) setShopPlan(shop.plan);
+      })
+      .catch((error: unknown) => console.error('Erro ao carregar plano do cliente:', error));
+    return () => { active = false; };
+  }, [isDemo, targetShop]);
+
+  const isPro = urlPlan === 'PRO' || (urlPlan !== 'FREE' && (isDemo ? demoPlan === 'PRO' : shopPlan === 'PRO'));
+
+  if (isPro) return <ClientProArea user={user} shopSlug={shopSlug} />;
+  if (!isDemo && urlPlan !== 'FREE' && shopPlan === null) {
+    return <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', color: '#475569' }}>Carregando sua área de cliente...</div>;
+  }
+  return <ClientPortalLegacyPage />;
+}
+
+function ClientPortalLegacyPage() {
   const { user, shopSlug, updateUserProfile, demoPlan, setDemoPlan } = useAuth();
   const searchParams = useSearchParams();
   const urlPlan = searchParams.get('plan') as 'PRO' | 'FREE' | null;

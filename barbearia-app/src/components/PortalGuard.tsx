@@ -30,7 +30,7 @@ export default function PortalGuard({
   allow: UserRole;
   children: React.ReactNode;
 }) {
-  const { user, role, loading, shopSlug, logout, switchRole } = useAuth();
+  const { user, role, loading, shopSlug, logout, switchRole, demoPlan, setDemoPlan } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -39,9 +39,18 @@ export default function PortalGuard({
       // Modo Demonstração Livre: se entrar direto em /admin, /barber ou /client sem login, ativa o perfil de demonstração
       switchRole(allow);
     } else if (role !== allow) {
+      const demoUserIds = ['usr-admin-1', 'usr-barber-1', 'usr-client-1'];
+      const requestedPlan = new URLSearchParams(window.location.search).get('plan');
+      if (demoUserIds.includes(user.id)) {
+        if (requestedPlan === 'FREE' || requestedPlan === 'PRO') {
+          setDemoPlan(requestedPlan);
+        }
+        switchRole(allow);
+        return;
+      }
       router.replace(ROLE_HOME[role]);
     }
-  }, [loading, user, role, allow, router, switchRole]);
+  }, [loading, user, role, allow, router, switchRole, setDemoPlan]);
 
   if (loading || !user || role !== allow) {
     return (
@@ -55,7 +64,6 @@ export default function PortalGuard({
   }
 
   const info = ROLE_LABEL[role];
-  const { demoPlan, setDemoPlan } = useAuth();
   const isDemo = !shopSlug && !user?.barbershopId;
 
   return (
@@ -168,7 +176,7 @@ export default function PortalGuard({
             type="button"
             onClick={() => {
               if (role !== 'admin') {
-                router.push(`/admin?plan=${demoPlan}`);
+                switchRole('admin');
               }
             }}
             style={{
@@ -190,7 +198,7 @@ export default function PortalGuard({
             type="button"
             onClick={() => {
               if (role !== 'barber') {
-                router.push(`/barber?plan=${demoPlan}`);
+                switchRole('barber');
               }
             }}
             style={{
@@ -212,7 +220,7 @@ export default function PortalGuard({
             type="button"
             onClick={() => {
               if (role !== 'client') {
-                router.push(`/client?plan=${demoPlan}`);
+                switchRole('client');
               }
             }}
             style={{

@@ -105,7 +105,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const targetRoute = u.role === 'admin' ? '/admin' : u.role === 'barber' ? '/barber' : '/client';
     // Se a rota atual já for a rota correta do perfil, não força o replace limpando query params (?plan=PRO)
-    if (typeof window !== 'undefined' && window.location.pathname === targetRoute) {
+    if (
+      typeof window !== 'undefined' &&
+      (window.location.pathname === targetRoute || window.location.pathname.startsWith(`${targetRoute}/`))
+    ) {
       return;
     }
 

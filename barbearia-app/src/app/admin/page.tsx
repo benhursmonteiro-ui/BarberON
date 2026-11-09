@@ -37,6 +37,7 @@ import {
   User,
   Lock,
   CalendarDays,
+  ListOrdered,
   ExternalLink,
   Copy,
   Check,
@@ -499,6 +500,27 @@ export default function AdminPortalPage() {
                 </button>
               );
             })}
+          <button
+            type="button"
+            onClick={() => router.push('/admin/waiting-room')}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.75rem',
+              padding: '0.65rem 0.85rem',
+              borderRadius: '8px',
+              background: 'transparent',
+              color: '#94a3b8',
+              border: 'none',
+              cursor: 'pointer',
+              fontSize: '0.82rem',
+              fontWeight: 500,
+              textAlign: 'left',
+            }}
+          >
+            <ListOrdered size={16} />
+            <span>Fila de Espera</span>
+          </button>
         </nav>
 
         {/* Upgrade Card for Free Version */}
